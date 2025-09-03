@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>抽獎箱動畫 — 許多球跑動 + 大獎動畫</title>
+<style>
+  body{margin:0;font-family:sans-serif;background:#071026;color:#e6eef8}
+  .wrap{max-width:1100px;margin:18px auto;padding:18px}
+  h1{margin:0 0 12px;font-size:1.25rem}
+  .controls{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+  button{padding:10px 14px;border-radius:10px;border:0;background:#35d0ff;color:#04232f;font-weight:700;cursor:pointer}
+  button.ghost{background:transparent;color:#e6eef8;border:1px solid rgba(255,255,255,.2)}
+  button:disabled{opacity:0.4;cursor:not-allowed}
+  .canvas-wrap{position:relative;border-radius:12px;overflow:hidden;background:#0b1626;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  canvas{display:block;width:100%;height:600px}
+  #results{margin-top:16px;padding:12px;background:rgba(255,255,255,0.05);border-radius:8px}
+  .round{margin-bottom:8px}
+  .round strong{margin-right:6px;color:#35d0ff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>抽獎箱動畫（932～1082）</h1>
+  <div class="controls">
+    <button id="drawBtn">開始抽獎（抽 20 顆）</button>
+    <button id="grandBtn" class="ghost" disabled>抽大獎</button>
+    <button id="resetBtn" class="ghost">全部重置</button>
+  </div>
+
+  <div class="canvas-wrap" id="box">
+    <canvas id="c"></canvas>
+  </div>
+
+  <div id="results">
+    <h3>抽獎結果</h3>
+    <div id="rounds"></div>
+  </div>
+</div>
+
+<script>
+const MIN=932,MAX=1082,BATCH=20;
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d',{alpha:false});
+let W=1200,H=600;
+function resize(){
+  const dpr=window.devicePixelRatio||1;
+  W=canvas.clientWidth=canvas.parentElement.clientWidth;
+  H=600;
+  canvas.width=W*dpr;
+  canvas.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize',resize);
+resize();
+
+const COLORS=['#f97316','#fb7185','#60a5fa','#34d399','#f43f5e','#a78bfa','#f59e0b','#06b6d4'];
+
+class Ball{
+  constructor(num,x,y,vx,vy,r=20){
+    this.num=num;
+    this.x=x;
+    this.y=y;
+    this.vx=vx;
+    this.vy=vy;
+    this.r=r;
+    this.color=COLORS[Math.floor(Math.random()*COLORS.length)];
+    this.isPicked=false;
+    this.grandEffect=false;
+    this.effectTime=0;
+  }
+  draw(){
+    ctx.beginPath();
+    let radius = this.r;
+    let alpha = 1;
+    let color = this.color;
+    if(this.grandEffect){
+      // 閃爍顏色、放大縮小
+      alpha = 0.5 + 0.5*Math.sin(this.effectTime*10);
+      radius = this.r + 10*Math.sin(this.effectTime*10);
+      color = `hsl(${this.effectTime*200%360}, 100%, 50%)`;
+    }
+    ctx.fillStyle=color;
+    ctx.globalAlpha=alpha;
+    ctx.arc(this.x,this.y,radius,0,Math.PI*2);
+    ctx.fill();
+    ctx.globalAlpha=1;
+    ctx.fillStyle='#021017';
+    ctx.font=`${radius*0.6}px sans-serif`;
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText(this.num,this.x,this.y);
+  }
+  step(dt){
+    if(this.isPicked && !this.grandEffect) return;
+    this.x+=this.vx*dt;
+    this.y+=this.vy*dt;
+    if(this.x<this.r||this.x>W-this.r) this.vx*=-1;
+    if(this.y<this.r||this.y>H-this.r) this.vy*=-1;
+    if(this.grandEffect) this.effectTime+=dt;
+  }
+}
+
+let allNumbers=[];
+for(let i=MIN;i<=MAX;i++) allNumbers.push(i);
+let balls=[];
+function initBalls(){
+  balls=[];
+  for(const num of allNumbers){
+    const r=18+Math.random()*6;
+    const x=r+Math.random()*(W-2*r);
+    const y=r+Math.random()*(H-2*r);
+    const sp=40+Math.random()*60;
+    const a=Math.random()*Math.PI*2;
+    balls.push(new Ball(num,x,y,Math.cos(a)*sp,Math.sin(a)*sp,r));
+  }
+}
+
+function update(dt){for(const b of balls)b.step(dt);}
+function render(){
+  ctx.fillStyle='#071226';
+  ctx.fillRect(0,0,W,H);
+  for(const b of balls)b.draw();
+}
+
+let last=performance.now();
+function loop(t){
+  const dt=(t-last)/1000;
+  last=t;
+  update(dt);
+  render();
+  requestAnimationFrame(loop);
+}
+initBalls();
+requestAnimationFrame(loop);
+
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+const rounds=document.getElementById('rounds');
+let round=0;
+const grandBtn=document.getElementById('grandBtn');
+let grandDrawn=false;
+
+// 抽 20 顆
+async function draw(){
+  const pool=balls.filter(b=>!b.isPicked);
+  if(pool.length===0){
+    alert('沒有球可抽了');
+    return;
+  }
+  shuffle(pool);
+  const take=Math.min(BATCH,pool.length);
+  const selected=pool.slice(0,take);
+  round++;
+  const nums=[];
+  for(const b of selected){
+    b.isPicked=true;
+    nums.push(b.num);
+  }
+  nums.sort((a,b)=>a-b);
+  const div=document.createElement('div');
+  div.className='round';
+  div.innerHTML=`<strong>第 ${round} 輪：</strong> ${nums.join(', ')}`;
+  rounds.prepend(div);
+
+  if(round>=5 && !grandDrawn){
+    grandBtn.disabled=false;
+  }
+}
+
+// 抽大獎動畫
+function drawGrandPrize(){
+  if(grandDrawn){
+    alert('大獎已經抽過了！');
+    return;
+  }
+  const pool=balls.filter(b=>!b.isPicked);
+  if(pool.length===0){
+    alert('沒有剩餘號碼可抽！');
+    return;
+  }
+  shuffle(pool);
+  const lucky=pool[0];
+  lucky.grandEffect=true;
+  lucky.isPicked=true;
+  grandDrawn=true;
+  grandBtn.disabled=true;
+
+  // 動畫持續 3 秒，然後從畫面消失
+  let elapsed=0;
+  const duration=3; // 秒
+  const anim=()=>{
+    elapsed+=0.016;
+    if(elapsed>=duration){
+      balls=balls.filter(b=>b!==lucky); // 移除球
+      const div=document.createElement('div');
+      div.className='round';
+      div.innerHTML=`<strong style="color:#facc15;font-size:1.2em">🎉 大獎號碼：</strong> <span style="color:#f87171;font-weight:700">${lucky.num}</span>`;
+      rounds.prepend(div);
+      return;
+    }
+    requestAnimationFrame(anim);
+  }
+  anim();
+}
+
+document.getElementById('drawBtn').onclick=draw;
+grandBtn.onclick=drawGrandPrize;
+
+// 重置
+document.getElementById('resetBtn').onclick=()=>{
+  if(confirm('確定重置？')){
+    rounds.innerHTML='';
+    round=0;
+    grandDrawn=false;
+    grandBtn.disabled=true;
+    initBalls();
+  }
+};
+</script>
+</body>
+</html>
