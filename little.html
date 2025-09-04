@@ -39,9 +39,8 @@
 </div>
 
 <!-- 音效 -->
-<audio id="drawSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5567b3fc9d.mp3?filename=ding-6163.mp3" preload="auto"></audio>
-<audio id="drumRoll" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_71b9f59e20.mp3?filename=drum-roll-6349.mp3" preload="auto"></audio>
-<audio id="grandSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5f97c82e30.mp3?filename=tada-fanfare-6313.mp3" preload="auto"></audio>
+<audio id="drawSound" src="images/prosounds.mp3" preload="auto"></audio>
+<audio id="grandSound" src="images/prosounds.mp3" preload="auto"></audio>
 
 <script>
 const MIN=932,MAX=1082,BATCH=20;
@@ -150,15 +149,15 @@ let round=0;
 const grandBtn=document.getElementById('grandBtn');
 let grandDrawn=false;
 
-// 抽 20 顆
-function draw(){
+// 抽 20 顆（延遲10秒顯示，第一顆=第一獎，第二顆=第二獎）
+async function draw(){
   const pool = balls.filter(b => !b.isPicked);
-  if(pool.length===0){
+  if(pool.length === 0){
     alert('沒有球可抽了');
     return;
   }
 
-  // 播放抽獎音效
+  // 播放音效
   const drawSound = document.getElementById('drawSound');
   drawSound.currentTime = 0;
   drawSound.play();
@@ -167,67 +166,81 @@ function draw(){
   const take = Math.min(BATCH, pool.length);
   const selected = pool.slice(0, take);
 
-  // 標記已抽，但暫不顯示結果
-  for(const b of selected) b.isPicked=true;
+  for(const b of selected){
+    b.isPicked = true;
+  }
 
-  const nums = selected.map(b=>b.num).sort((a,b)=>a-b);
-  const currentRound = round+1;
+  const nums = selected.map(b => b.num);
+  const currentRound = round + 1;
 
-  // 延遲 3 秒才顯示結果
-  setTimeout(()=>{
-    round = currentRound;
-    const div = document.createElement('div');
-    div.className='round';
-    div.innerHTML=`<strong>第 ${round} 輪：</strong> ${nums.join(', ')}`;
-    rounds.prepend(div);
-    if(round>=5 && !grandDrawn) grandBtn.disabled=false;
-  }, 3000);
+setTimeout(() => {
+  round = currentRound;
+  let resultHtml = `<strong>第 ${round} 輪：</strong> `;
+
+  nums.forEach((num, idx) => {
+    const prize = (round - 1) * BATCH + (idx + 1); 
+    // BATCH=20，第一輪 prize=1~20，第二輪 prize=21~40，以此類推
+    resultHtml += `<span style="color:#facc15;font-weight:700">🏆 第${prize}獎 ${num}</span>, `;
+  });
+
+  // 去掉最後的逗號
+  resultHtml = resultHtml.replace(/, $/, "");
+
+  const div = document.createElement('div');
+  div.className = 'round';
+  div.innerHTML = resultHtml;
+  rounds.prepend(div);
+
+  if(round >= 5 && !grandDrawn){
+    grandBtn.disabled = false;
+  }
+}, 10000);
 }
 
-// 抽大獎
+// 抽大獎（3秒動畫後顯示）
 function drawGrandPrize(){
   if(grandDrawn){
     alert('大獎已經抽過了！');
     return;
   }
-  const pool = balls.filter(b => !b.isPicked);
+  const pool=balls.filter(b=>!b.isPicked);
   if(pool.length===0){
     alert('沒有剩餘號碼可抽！');
     return;
   }
-
   shuffle(pool);
-  const lucky = pool[0];
-  lucky.grandEffect = true;
-  lucky.isPicked = true;
-  grandDrawn = true;
-  grandBtn.disabled = true;
+  const lucky=pool[0];
+  lucky.grandEffect=true;
+  lucky.isPicked=true;
+  grandDrawn=true;
+  grandBtn.disabled=true;
 
-  // 先播放鼓聲動畫 3 秒
-  const drumRoll = document.getElementById('drumRoll');
-  drumRoll.currentTime = 0;
-  drumRoll.play();
+  const grandSound=document.getElementById('grandSound');
+  grandSound.currentTime=0;
+  grandSound.play();
 
-  setTimeout(()=>{
-    balls = balls.filter(b=>b!==lucky); // 移除球
-    lucky.grandEffect=false;
-
-    // 播放大獎音效
-    const grandSound = document.getElementById('grandSound');
-    grandSound.currentTime=0;
-    grandSound.play();
-
-    const div = document.createElement('div');
-    div.className='round';
-    div.innerHTML=`<strong style="color:#facc15;font-size:1.2em">🎉 大獎號碼：</strong> <span style="color:#f87171;font-weight:700">${lucky.num}</span>`;
-    rounds.prepend(div);
-  }, 3000);
+  let elapsed=0;
+  const duration=3;
+  const anim=()=>{
+    elapsed+=0.016;
+    if(elapsed>=duration){
+      balls=balls.filter(b=>b!==lucky);
+      const div=document.createElement('div');
+      div.className='round';
+      div.innerHTML=`<strong style="color:#facc15;font-size:1.2em">🎉 大獎號碼：</strong> <span style="color:#f87171;font-weight:700">${lucky.num}</span>`;
+      rounds.prepend(div);
+      return;
+    }
+    requestAnimationFrame(anim);
+  }
+  anim();
 }
 
+document.getElementById('drawBtn').onclick=draw;
+grandBtn.onclick=drawGrandPrize;
+
 // 重置
-document.getElementById('drawBtn').onclick = draw;
-grandBtn.onclick = drawGrandPrize;
-document.getElementById('resetBtn').onclick = ()=>{
+document.getElementById('resetBtn').onclick=()=>{
   if(confirm('確定重置？')){
     rounds.innerHTML='';
     round=0;
@@ -239,6 +252,7 @@ document.getElementById('resetBtn').onclick = ()=>{
 </script>
 </body>
 </html>
+
 
 
 
