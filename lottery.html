@@ -38,6 +38,10 @@
   </div>
 </div>
 
+<!-- 放在 body 最後 -->
+<audio id="drawSound" src="images/prosounds.mp3" preload="auto"></audio>
+<audio id="grandSound" src="images/prosounds.mp3" preload="auto"></audio>
+
 <script>
 const MIN=932,MAX=1082,BATCH=20;
 const canvas=document.getElementById('c'),ctx=canvas.getContext('2d',{alpha:false});
@@ -147,32 +151,38 @@ const grandBtn=document.getElementById('grandBtn');
 let grandDrawn=false;
 
 // 抽 20 顆
-async function draw(){
-  const pool=balls.filter(b=>!b.isPicked);
-  if(pool.length===0){
+async function draw() {
+  const pool = balls.filter(b => !b.isPicked);
+  if (pool.length === 0) {
     alert('沒有球可抽了');
     return;
   }
+
   shuffle(pool);
-  const take=Math.min(BATCH,pool.length);
-  const selected=pool.slice(0,take);
-  round++;
-  const nums=[];
-  for(const b of selected){
-    b.isPicked=true;
-    nums.push(b.num);
-  }
-  nums.sort((a,b)=>a-b);
-  const div=document.createElement('div');
-  div.className='round';
-  div.innerHTML=`<strong>第 ${round} 輪：</strong> ${nums.join(', ')}`;
-  rounds.prepend(div);
+  const take = Math.min(BATCH, pool.length);
+  const selected = pool.slice(0, take);
 
-  if(round>=5 && !grandDrawn){
-    grandBtn.disabled=false;
+  // 標記已抽，但暫不顯示結果
+  for (const b of selected) {
+    b.isPicked = true;
   }
+
+  const nums = selected.map(b => b.num).sort((a, b) => a - b);
+  const currentRound = round + 1;
+
+  // 延遲10秒才顯示結果
+  setTimeout(() => {
+    round = currentRound; // 更新 round
+    const div = document.createElement('div');
+    div.className = 'round';
+    div.innerHTML = `<strong>第 ${round} 輪：</strong> ${nums.join(', ')}`;
+    rounds.prepend(div);
+
+    if (round >= 5 && !grandDrawn) {
+      grandBtn.disabled = false;
+    }
+  }, 10000);
 }
-
 // 抽大獎動畫
 function drawGrandPrize(){
   if(grandDrawn){
@@ -222,6 +232,40 @@ document.getElementById('resetBtn').onclick=()=>{
     initBalls();
   }
 };
+
+async function draw(){
+  const pool=balls.filter(b=>!b.isPicked);
+  if(pool.length===0){
+    alert('沒有球可抽了');
+    return;
+  }
+
+  // 播放抽獎音效
+  const drawSound = document.getElementById('drawSound');
+  drawSound.currentTime = 0; // 從頭播放
+  drawSound.play();
+
+  shuffle(pool);
+  const take=Math.min(BATCH,pool.length);
+  const selected=pool.slice(0,take);
+  round++;
+  const nums=[];
+  for(const b of selected){
+    b.isPicked=true;
+    nums.push(b.num);
+  }
+  nums.sort((a,b)=>a-b);
+  const div=document.createElement('div');
+  div.className='round';
+  div.innerHTML=`<strong>第 ${round} 輪：</strong> ${nums.join(', ')}`;
+  rounds.prepend(div);
+
+  if(round>=5 && !grandDrawn){
+    grandBtn.disabled=false;
+  }
+}
+
 </script>
+
 </body>
 </html>
