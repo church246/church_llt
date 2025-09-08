@@ -23,7 +23,7 @@
 <div class="wrap">
   <h1>抽獎箱動畫（932～1082）</h1>
   <div class="controls">
-    <button id="drawBtn">開始抽獎（抽 20 顆）</button>
+    <button id="drawBtn">開始抽獎（抽 15 顆）</button>
     <button id="grandBtn" class="ghost" disabled>抽大獎</button>
     <button id="resetBtn" class="ghost">全部重置</button>
   </div>
@@ -43,7 +43,7 @@
 <audio id="grandSound" src="images/prosounds.mp3" preload="auto"></audio>
 
 <script>
-const MIN=932,MAX=1082,BATCH=20;
+const MIN=932,MAX=1082,BATCH=15;
 const canvas=document.getElementById('c'),ctx=canvas.getContext('2d',{alpha:false});
 let W=1200,H=600;
 function resize(){
@@ -175,12 +175,12 @@ async function draw(){
 
 setTimeout(() => {
   round = currentRound;
-  let resultHtml = `<strong>第 ${round} 輪：</strong> `;
-
+  let resultHtml = `<strong>第 ${round} 輪：<br></strong> `;
+ 
   nums.forEach((num, idx) => {
     const prize = (round - 1) * BATCH + (idx + 1); 
     // BATCH=20，第一輪 prize=1~20，第二輪 prize=21~40，以此類推
-    resultHtml += `<span style="color:#facc15;font-weight:700">🏆 第${prize}獎 ${num}</span>, `;
+    resultHtml += `<span style="color:#facc11;font-weight:700">🏆 第${prize}獎 ${num}<br></span> `;
   });
 
   // 去掉最後的逗號
