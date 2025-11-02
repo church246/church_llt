@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>每週影片連結 — 2025 主日系列</title>
+  <style>
+    :root{--bg:#0f172a;--card:#0b1220;--muted:#9aa4b2;--accent:#7dd3fc}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial;background:linear-gradient(180deg,#071027 0%, #081429 100%);color:#e6eef6}
+    .wrap{max-width:1100px;margin:28px auto;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    h1{margin:0;font-size:1.4rem}
+    p.lead{margin:4px 0 0;color:var(--muted);font-size:0.95rem}
+    .grid{display:grid;grid-template-columns:360px 1fr;gap:18px;margin-top:18px}
+    .panel{background:var(--card);padding:14px;border-radius:12px;box-shadow:0 6px 22px rgba(2,6,23,0.6)}
+    .list{height:72vh;overflow:auto;padding:6px}
+    .week{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer}
+    .week:hover{background:rgba(255,255,255,0.02)}
+    .week.active{background:linear-gradient(90deg,rgba(125,211,252,0.08),rgba(125,211,252,0.03));outline:1px solid rgba(125,211,252,0.12)}
+    .week .meta{font-size:0.88rem}
+    .week .date{color:var(--muted);font-size:0.78rem}
+    .player{min-height:420px;display:flex;flex-direction:column}
+    .player .frame{flex:1;border-radius:10px;overflow:hidden}
+    iframe{width:100%;height:100%;border:0}
+    .actions{display:flex;gap:8px;align-items:center;margin-top:10px}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:8px;color:var(--muted);font-size:0.9rem;text-decoration:none}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),#60a5fa);color:#01243a;border:0}
+    footer{margin-top:18px;color:var(--muted);font-size:0.85rem}
+    @media (max-width:900px){.grid{grid-template-columns:1fr;}.list{height:28vh}.player{min-height:240px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>每週主日影片（從 2025-01-05 起）</h1>
+        <p class="lead">每個禮拜對應一個 YouTube 連結 — 點選左側週次即可在右方播放。</p>
+      </div>
+      <div>
+        <small style="color:var(--muted)">共 32 週 • 最後週次：2025-08-10</small>
+      </div>
+    </header>
+
+    <div class="grid">
+      <aside class="panel">
+        <div style="font-weight:600;margin-bottom:8px">週次清單</div>
+        <div class="list" id="weekList" aria-label="每週影片列表">
+          <!-- JS will populate -->
+        </div>
+        <footer>使用說明：點選週次或按鍵盤上下鍵切換。可點「在 YouTube 開啟」在 YouTube 上觀看/分享。</footer>
+      </aside>
+
+      <main class="panel player">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:600">播放器</div>
+          <div id="currentLabel" style="color:var(--muted)">第 1 週 — 2025-01-05</div>
+        </div>
+        <div class="frame" id="player">
+          <iframe id="ytframe" src="https://www.youtube.com/embed/wZIjlCAvU3s" title="YouTube video player" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+        </div>
+        <div class="actions">
+          <a id="openYT" class="btn" target="_blank" rel="noopener">在 YouTube 開啟</a>
+          <button id="prevBtn" class="btn">上一週</button>
+          <button id="nextBtn" class="btn">下一週</button>
+          <a id="downloadBtn" class="btn primary" href="#" download="weekly-youtube-sermons-2025.html">下載 HTML</a>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Data: video IDs and mapped Sunday dates (start 2025-01-05)
+    const data = [
+      {id:'wZIjlCAvU3s', date:'2025-01-05'},
+      {id:'4HB9X1xQnBI', date:'2025-01-12'},
+      {id:'17kRzQEYEq4', date:'2025-01-19'},
+      {id:'R_c6RS8TNpU', date:'2025-01-26'},
+      {id:'SyumsvijcPY', date:'2025-02-02'},
+      {id:'3hQpbWGivoE', date:'2025-02-09'},
+      {id:'59ygT83zw_Y', date:'2025-02-16'},
+      {id:'Q55lacwomKA', date:'2025-02-23'},
+      {id:'wBQUFQT8HH4', date:'2025-03-02'},
+      {id:'e3GmH7FjG_4', date:'2025-03-09'},
+      {id:'Mm3lnJ4CHpk', date:'2025-03-16'},
+      {id:'pVAUzu65zvc', date:'2025-03-23'},
+      {id:'XGbV3Rq_RdY', date:'2025-03-30'},
+      {id:'xtDyC4E5IBk', date:'2025-04-06'},
+      {id:'z-Gp-lyW00o', date:'2025-04-13'},
+      {id:'OespiefiG5I', date:'2025-04-20'},
+      {id:'c2O5nlyyvPA', date:'2025-04-27'},
+      {id:'eqKWzgcPexg', date:'2025-05-04'},
+      {id:'pGteYZsfCGo', date:'2025-05-11'},
+      {id:'UklKy51fm_4', date:'2025-05-18'},
+      {id:'STlW-ZECu7M', date:'2025-05-25'},
+      {id:'RsiCJJl0L0c', date:'2025-06-01'},
+      {id:'eGwsZsLZ2Jo', date:'2025-06-08'},
+      {id:'TETNfdHY5HI', date:'2025-06-15'},
+      {id:'IWVw6r6CeDI', date:'2025-06-22'},
+      {id:'CtkZNWorByM', date:'2025-06-29'},
+      {id:'zIi_0BAXi88', date:'2025-07-06'},
+      {id:'AQoOjmJJWFM', date:'2025-07-13'},
+      {id:'u_969NX9EQk', date:'2025-07-20'},
+      {id:'lQMV6h1MVfQ', date:'2025-07-27'},
+      {id:'kv5E4qFRn0o', date:'2025-08-03'},
+      {id:'p2ec00y8_A8', date:'2025-08-10'},
+      {id:'qlj3b77AUuI', date:'2025-08-17'},
+      {id:'hy69uzP4Bd8', date:'2025-08-24'},
+      {id:'n_udOexD1ww', date:'2025-08-31'},
+      {id:'Lj3yL3pDpjU', date:'2025-09-07'},
+      {id:'haZZVbkEI0U', date:'2025-09-14'},
+      {id:'nP9AkWqOAZo', date:'2025-09-21'},
+      {id:'ptJEJYmwH6E', date:'2025-09-28'},
+      {id:'CNOmIlUzelU', date:'2025-10-5'},
+      {id:'HK_NklLihaE', date:'2025-10-12'},
+      {id:'6ZYSfVvFP8Y', date:'2025-10-19'},
+      {id:'xGuGOytEYKw', date:'2025-10-26'},
+      {id:'6fagcbTgV30', date:'2025-11-02'}
+      // {id:'HK_NklLihaE', date:'2025-11-09'}
+    ];
+    const weekList = document.getElementById('weekList');
+    const iframe = document.getElementById('ytframe');
+    const currentLabel = document.getElementById('currentLabel');
+    const openYT = document.getElementById('openYT');
+    let currentIndex = 0;
+
+    function renderList(){
+      data.forEach((item,i)=>{
+        const el = document.createElement('div');
+        el.className='week'+(i===0? ' active':'');
+        el.tabIndex=0;
+        el.setAttribute('data-index',i);
+        el.innerHTML = `<div style="flex:1"><div class="meta">第 ${i+1} 週</div><div class="date">${item.date}</div></div>`;
+        el.addEventListener('click',()=>loadIndex(i));
+        el.addEventListener('keydown',(e)=>{ if(e.key==='Enter') loadIndex(i); });
+        weekList.appendChild(el);
+      });
+    }
+
+    function loadIndex(i){
+      const item = data[i];
+      iframe.src = `https://www.youtube.com/embed/${item.id}`;
+      currentLabel.textContent = `第 ${i+1} 週 — ${item.date}`;
+      openYT.href = `https://www.youtube.com/watch?v=${item.id}`;
+      // mark active
+      Array.from(weekList.children).forEach((ch,idx)=> ch.classList.toggle('active', idx===i));
+      currentIndex = i;
+      // ensure visible
+      const node = weekList.children[i];
+      if(node) node.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+
+    document.getElementById('prevBtn').addEventListener('click',()=> loadIndex(Math.max(0,currentIndex-1)));
+    document.getElementById('nextBtn').addEventListener('click',()=> loadIndex(Math.min(data.length-1,currentIndex+1)));
+    document.addEventListener('keydown',(e)=>{
+      if(e.key==='ArrowDown') loadIndex(Math.min(data.length-1,currentIndex+1));
+      if(e.key==='ArrowUp') loadIndex(Math.max(0,currentIndex-1));
+    });
+
+    // Download self HTML: creates a blob of this document's HTML
+    document.getElementById('downloadBtn').addEventListener('click',(ev)=>{
+      ev.preventDefault();
+      const html = '<!doctype html>\\n'+document.documentElement.outerHTML;
+      const blob = new Blob([html],{type:'text/html'});
+      const url = URL.createObjectURL(blob);
+      ev.target.href = url;
+      ev.target.download = 'weekly-youtube-sermons-2025.html';
+      // let user click to download (we already set href)
+    });
+
+    // init
+    renderList();
+    openYT.href = `https://www.youtube.com/watch?v=${data[0].id}`;
+
+  </script>
+</body>
+</html>

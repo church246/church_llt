@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>台南信義會靈糧堂</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+ <style>
+    body {
+      font-family: "Microsoft JhengHei", sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #2c3e50;
+      color: #fff;
+      text-align: center;
+      padding: 1em;
+    }
+    main {
+      max-width: 1100px;
+      margin: 2em auto;
+      padding: 1em;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 12px;
+      vertical-align: top;
+    }
+    th {
+      background: #ecf0f1;
+      text-align: center;
+      width: 20%;
+    }
+    td ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    td p {
+      margin: 0.3em 0;
+    }
+  </style>
+   
+</head>
+<body class="bg-gray-50 text-gray-800 leading-relaxed">
+
+  <!-- 導覽列 -->
+  <header class="bg-blue-700 text-white shadow-lg">
+    <div class="container mx-auto flex items-center justify-between p-4">
+      <a href="index.html" class="flex items-center space-x-2">
+        <img src="images/church_view.jpg" alt="教會logo" class="w-12 h-12 rounded-full shadow-md">
+        <span class="font-bold text-xl">台南信義會靈糧堂</span>
+      </a>
+      <nav class="hidden md:flex space-x-6">
+        <a href="#about" class="hover:text-yellow-300">關於我們</a>
+        <a href="#services" class="hover:text-yellow-300">聚會內容</a>
+        <a href="#sermons" class="hover:text-yellow-300">主日講道</a>
+        <a href="#contact" class="hover:text-yellow-300">聯絡資訊</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Banner -->
+  <section class="relative bg-cover bg-center h-[50vh]" style="background-image:url('images/church_view.jpg');">
+    <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+      <div class="text-center text-white">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">信義會靈糧堂</h1>
+        <p class="text-lg">聚會內容：<a href="https://sites.google.com/view/tlc-llt-worship" class="underline">主日崇拜</a>、小組聚會、健美操、<a href="https://youtu.be/UVRQox4FSu4" class="underline">銀色奇肌活力班</a>、兒童主日學</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 三大選單 -->
+  <section class="py-12">
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+      <div class="bg-white rounded-xl shadow-lg p-6 hover:scale-105 transition">
+        <img src="images/news.png" alt="教會活動" class="mx-auto rounded-lg shadow-md mb-4 w-40">
+        <a href="index_restaurant.html" class="text-blue-700 font-semibold">進入 (最近教會活動)</a>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6 hover:scale-105 transition">
+        <img src="images/period.jpg" alt="特刊" class="mx-auto rounded-lg shadow-md mb-4 w-40">
+        <a href="https://c3133100.github.io/periodical/" class="text-blue-700 font-semibold">進入 (六十週年特刊)</a>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6 hover:scale-105 transition">
+        <img src="images/invite.png" alt="課程" class="mx-auto rounded-lg shadow-md mb-4 w-40">
+        <a href="https://church246.github.io/Lesson/" class="text-blue-700 font-semibold">進入 (課程或資源)</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 異象與策略 -->
+  <section id="about" class="py-12 bg-gray-100">
+    <div class="container mx-auto grid md:grid-cols-2 gap-8">
+      <div>
+        <h2 class="text-2xl font-bold text-blue-700 mb-4">深知所信</h2>
+        <p class="italic text-gray-700">「求我們主耶穌基督的神，榮耀的父，將那賜人智慧和啟示的靈賞給你們，使你們真知道祂。」(以弗所書 1:17)</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h3 class="text-xl font-bold mb-2">2025 異象與目標</h3>
+        <p class="text-sm text-gray-700 leading-7">
+          監督提出十年異象：為主贏得十萬靈魂。靈糧堂領受使命：認領1000人。<br><br>
+          <span class="font-semibold">異象：</span> 以耶穌為根基，成為興起發光，按時分糧的教會<br>
+          <span class="font-semibold">使命：</span> 生根建造、代代相傳、植堂宣教<br>
+          <span class="font-semibold">策略：</span> 人人禱告、人人讀經、人人聚會、人人奉獻、人人傳福音
+        </p>
+      </div> 
+       
+    </div>
+  </section>
+
+
+
+  <!-- 聚會表 -->
+  <section id="services" class="py-12">
+    <div class="container mx-auto">
+      <h2 class="text-2xl font-bold text-blue-700 mb-6 text-center">聚會內容</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full border border-gray-300 text-center bg-white rounded-lg shadow-md">
+          <thead class="bg-blue-600 text-black">
+            <tr>
+              <th class="p-3">星期</th>
+              <th class="p-3">時間</th>
+              <th class="p-3">聚會名稱</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr><td class="p-3">主日</td><td>上午10:00</td><td>主日崇拜、兒童主日學</td></tr>
+            <tr><td class="p-3">主日</td><td>上午11:00</td><td>兒童美術班</td></tr>
+            <tr><td class="p-3">主日</td><td>下午12:30</td><td>約書亞小組、保羅小組
+佳美小組、帝寶盛愛小組、學青小組
+            <tr><td class="p-3">週二</td><td>下午12:10</td><td>成大英文小組</td></tr>
+            <tr><td class="p-3">週二</td><td>晚上08:00</td><td>蒙恩小組</td></tr>
+            <tr><td class="p-3">週三</td><td>晚上08:00</td><td>美女</td></tr>
+            <tr><td class="p-3">週四</td><td>上午09:00</td><td>健美操</td></tr>
+            <tr><td class="p-3">週四</td><td>上午09:30</td><td>良善小組</td></tr>
+            <tr><td class="p-3">週四</td><td>晚上07:25</td><td>喜樂小組</td></tr>
+            <tr><td class="p-3">週四</td><td>晚上07:30</td><td>牛棚二組</td></tr>
+            <tr><td class="p-3">週五</td><td>晚上07:30</td><td>牛棚、得勝、百合小組</td></tr>
+             <tr><td class="p-3">週五</td><td>晚上08:00</td><td>凡恩小組</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主日講道 -->
+  <section id="sermons" class="py-12 bg-gray-100">
+    <div class="container mx-auto">
+      <h2 class="text-2xl font-bold text-blue-700 mb-6 text-center">2026 主日講道</h2>
+      <p class="text-center mb-6"><a href="workship.html" class="text-green-600 underline">▶ 點此進入講道播放</a></p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-xl shadow-md p-4">
+          <!-- <h3 class="font-semibold text-lg mb-2">一月 義人的祈禱</h3> -->
+          <p class="text-sm">1/4 李允中教師<br>1/11 吳至新牧師<br>1/18 外請講員<br>1/25 吳至新牧師(許邦丞牧師)</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-4">
+          <!-- <h3 class="font-semibold text-lg mb-2">二月 困境中的信靠</h3> -->
+          <p class="text-sm">2/1 李允中教師<br>2/8 外請(吳至新牧師)<br>2/15 李桃瑩教師<br>2/22 吳至新牧師</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-4">
+          <!-- <h3 class="font-semibold text-lg mb-2">三月 持定所承認的道</h3> -->
+          <p class="text-sm">3/1 李允中教師<br>3/8 吳至新牧師(黃素真牧師)<br>3/15 外請講員<br>3/22 吳至新牧師<br>3/29 福音講座</p>
+        </div>
+         <div class="bg-white rounded-xl shadow-md p-4">
+    <!-- <h3 class="font-semibold text-lg mb-2">四月 神的宏大救贖計畫</h3> -->
+    <p class="text-sm">
+      4/5 李允中教師<br>
+      4/12 外請講員<br>
+      4/19 李桃瑩教師<br>
+      4/26 吳至新牧師
+    </p>
+  </div>
+
+  <!-- 五月 -->
+  <div class="bg-white rounded-xl shadow-md p-4">
+    <!-- <h3 class="font-semibold text-lg mb-2">五月 人的破壞與神的護理</h3> -->
+    <p class="text-sm">
+      5/3 李允中教師<br>
+      5/10 吳至新牧師(野外)<br>
+      5/17 外請講員<br>
+      5/24 吳至新牧師<br>
+      5/31 福音講座
+    </p>
+  </div>
+
+  <!-- 六月 -->
+  <div class="bg-white rounded-xl shadow-md p-4">
+    <!-- <h3 class="font-semibold text-lg mb-2">六月 人的破壞與神的護理</h3> -->
+    <p class="text-sm">
+      6/7 李允中教師<br>
+      6/14 外請講員<br>
+      6/21 李桃瑩教師<br>
+      6/28 吳至新牧師
+    </p>
+  </div>
+
+  <!-- 七月 -->
+  <div class="bg-white rounded-xl shadow-md p-4">
+    <!-- <h3 class="font-semibold text-lg mb-2">七月 神的保護與拯救</h3> -->
+    <p class="text-sm">
+      7/5 李允中教師<br>
+      7/12吳至新牧師<br>
+      7/19 外請講員<br>
+      7/26 吳至新牧師
+    </p>
+  </div>
+
+  <!-- 八月 -->
+  <div class="bg-white rounded-xl shadow-md p-4">
+    <!-- <h3 class="font-semibold text-lg mb-2">八月 神的公義與憐憫</h3> -->
+    <p class="text-sm">
+      8/2 李允中教師<br>
+      8/9 李桃瑩教師<br>
+      8/16 外請講員<br>
+      8/23 吳至新牧師<br>
+      8/30 福音講座
+    </p>
+  </div>
+
+  <!-- 九月 -->
+  <div class="bg-white rounded-xl shadow-md p-4">
+    <!-- <h3 class="font-semibold text-lg mb-2">九月 因信稱義的生命與生活</h3> -->
+    <p class="text-sm">
+      9/6 吳至新牧師<br>
+      9/13 李允中教師<br>
+      9/20 外請講員<br>
+      9/27 李允中教師
+    </p>
+  </div>
+
+  <!-- 十月 -->
+  <div class="bg-white rounded-xl shadow-md p-4">
+    <!-- <h3 class="font-semibold text-lg mb-2">十月 聖潔的呼召</h3> -->
+    <p class="text-sm">
+      10/4 吳至新牧師<br>
+      10/11 李允中教師<br>
+      10/18 李桃瑩教師<br>
+      10/25 李允中教師
+    </p>
+  </div>
+
+  <!-- 十一月 -->
+  <div class="bg-white rounded-xl shadow-md p-4">
+    <!-- <h3 class="font-semibold text-lg mb-2">十一月 神是不斷施行拯救的神</h3> -->
+    <p class="text-sm">
+      11/1 吳至新牧師<br>
+      11/8 李允中教師<br>
+      11/15 外請講員<br>
+      11/22 李允中教師<br>
+      11/29 福音講座
+    </p>
+  </div>
+
+  <!-- 十二月 -->
+  <div class="bg-white rounded-xl shadow-md p-4">
+    <!-- <h3 class="font-semibold text-lg mb-2">十二月 主工人做主工</h3> -->
+    <p class="text-sm">
+      12/6 吳至新牧師<br>
+      12/13 李允中教師<br>
+      12/20 李桃瑩教師<br>
+      12/27 李允中教師
+    </p>
+  </div>
+
+        <!-- 其餘月份可依樣新增 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 聯絡資訊 -->
+  <footer id="contact" class="bg-blue-800 text-white py-10">
+    <div class="container mx-auto grid md:grid-cols-2 gap-8">
+      <div>
+        <h2 class="text-2xl font-bold mb-4">聯絡我們</h2>
+        <ul class="space-y-3">
+          <li><a href="https://goo.gl/maps/Z3fJyYrM132h4K2z7" class="hover:underline">📍 教會位置</a></li>
+          <li><a href="tel:+886-6-3133100" class="hover:underline">📞 06-3133100</a></li>
+          <li><a href="mailto:c3133100@yahoo.com" class="hover:underline">📧 教會信箱</a></li>
+          <li><a href="https://lin.ee/FgJ09cZ" class="hover:underline">💬 加入 LINE</a></li>
+       <a href="https://lin.ee/HFxRGbw"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36" border="0"></a>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-xl font-semibold mb-2">台南信義會靈糧堂地圖</h3>
+        <img src="images/map.jpg" alt="地圖" class="rounded-xl shadow-md">
+      </div>
+    </div>
+    <div class="text-center text-sm text-gray-300 mt-6">
+      © 2025 台南信義會靈糧堂 
+    </div>
+  </footer>
+
+</body>
+</html>
