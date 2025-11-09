@@ -87,7 +87,18 @@
      <a href="https://www.facebook.com/c3133100/">教會臉書(活動或分享)</a>
  
   </header>
+<body>
 
+<!-- 密碼驗證 -->
+<div id="login" style="text-align:center; margin-top:100px;">
+  <h3>請輸入密碼以觀看教會回顧的影片</h3>
+  <input type="password" id="password" placeholder="請輸入密碼">
+  <button onclick="checkPassword()">登入</button>
+  <p id="error" style="color:red;"></p>
+</div>
+
+<!-- 網頁主要內容 -->
+<div id="mainContent" style="display:none;">
   <!-- 影片回顧 -->
   <main class="container">
     <h2 class="section-title">過往影片回顧</h2>
@@ -156,10 +167,27 @@
       <iframe src="https://www.youtube.com/embed/sQDI8p6-2ks" allowfullscreen></iframe>
     </div>
   </main>
+</div>
+
+<script>
+  function checkPassword() {
+    const input = document.getElementById('password').value;
+    const correct = "3133100"; // 🔐 你設定的密碼
+
+    if (input === correct) {
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+    } else {
+      document.getElementById('error').textContent = "密碼錯誤，請再試一次。";
+    }
+  }
+</script>
+  
 
   <!-- 頁尾 -->
   <footer>
-    <p>&copy; 2025 信義會靈糧堂 | 影片回顧</p>
+    <p>&copy; 2025 信義會靈糧堂 </p>+
+    <a href="index.html">回首頁</a>
   </footer>
 
   <!-- 回到頂部 -->
