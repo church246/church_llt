@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>台南信義會靈糧堂 — 2026 行事曆</title>
+  <meta name="description" content="信義會靈糧堂 2026 年會議、節期與活動總覽 — 專業 HTML5 網頁，支援列印與匯出。">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* 小幅自訂（Tailwind 已為主） */
+    .table-fixed th, .table-fixed td { white-space: pre-wrap; }
+    .brand { color:#0b5cff; }
+    @media print { .no-print{ display:none !important } }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <!-- Topbar -->
+  <header class="bg-blue-800 text-white py-4 shadow-md no-print">
+    <div class="container mx-auto flex items-center justify-between px-4">
+      <a href="#" class="flex items-center gap-3">
+        <img src="images/church_view.jpg" alt="教會圖示" class="w-12 h-12 rounded-full shadow-sm object-cover">
+        <div>
+          <h1 class="text-lg font-bold">台南信義會靈糧堂</h1>
+          <div class="text-sm opacity-90">2026 行事曆與活動總覽</div>
+        </div>
+      </a>
+      <!-- <div class="flex items-center gap-3">
+        <button onclick="window.print()" class="px-3 py-2 bg-white text-blue-800 rounded shadow hover:scale-105">列印</button>
+        <button onclick="downloadCSV()" class="px-3 py-2 bg-white text-blue-800 rounded shadow hover:scale-105">匯出 CSV</button>
+        <button onclick="downloadICal()" class="px-3 py-2 bg-white text-blue-800 rounded shadow hover:scale-105">匯出 iCal</button>
+      </div> -->
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-8">
+    <section class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-2xl font-bold text-blue-800 mb-4">年度總覽：會議・節期・活動・課程備註（2026）</h2>
+      
+
+      <div class="overflow-x-auto">
+        <table id="calendarTable" class="min-w-full table-fixed border border-gray-200">
+          <thead class="bg-blue-50">
+            <tr>
+              <th class="px-4 py-3 text-left w-28">月份</th>
+              <th class="px-4 py-3 text-left">會議</th>
+              <th class="px-4 py-3 text-left w-56">※ 節期</th>
+              <th class="px-4 py-3 text-left">活動</th>
+              <th class="px-4 py-3 text-left">課程 / 備註</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y">
+            <tr>
+              <td class="px-4 py-3">一月</td>
+              <td class="px-4 py-3">1/4 執事會<br>1/25 小組長總聚</td>
+              <td class="px-4 py-3">※ 1/1 元旦</td>
+              <td class="px-4 py-3">大掃除 (1/11 - 1/25)</td>
+              <td class="px-4 py-3">四到九月排課程<br>信徒養育(今年完成) 進入小組推動<br>短宣與青少年繼續開展</td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3">二月</td>
+              <td class="px-4 py-3">2/1 執事會<br>2/15 會友大會<br>2/22 區長會議</td>
+              <td class="px-4 py-3">※ 大年初二 2/15(日) 新春團拜<br>※ 2/28 和平紀念日</td>
+              <td class="px-4 py-3">家庭日 (2/15)</td>
+              <td class="px-4 py-3">信徒養育：主禱文<br>檢核今年信徒養育課程<br>銀色奇肌 / 優質父母 / 歡樂派</td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3">三月</td>
+              <td class="px-4 py-3">3/1 執事會<br>3/22 小組長總聚</td>
+              <td class="px-4 py-3"></td>
+              <td class="px-4 py-3"></td>
+              <td class="px-4 py-3"></td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3">四月</td>
+              <td class="px-4 py-3">4/5 執事會<br>4/27 區長會議</td>
+              <td class="px-4 py-3">※ 4/3~4/5 婦幼節 & 清明節<br>4/5 復活節主日</td>
+              <td class="px-4 py-3">4/5 聖洗禮</td>
+              <td class="px-4 py-3"></td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3">五月</td>
+              <td class="px-4 py-3">5/3 執事會<br>5/17 執事改選<br>5/24 小組長總聚</td>
+              <td class="px-4 py-3">※ 4/29~5/1 勞動節</td>
+              <td class="px-4 py-3">野外崇拜 (5/12) / 母親節慶祝會 (5/12) / 教會64週年大合照 (5/31)</td>
+              <td class="px-4 py-3"></td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3">六月</td>
+              <td class="px-4 py-3">6/2 執事會<br>6/23 區長會議<br>6/28 執事、小組長、區長案立</td>
+              <td class="px-4 py-3">※ 6/19 端午連假</td>
+              <td class="px-4 py-3">牧養同工退休會 (6/19-20)</td>
+              <td class="px-4 py-3"></td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3">七月</td>
+              <td class="px-4 py-3">7/5 執事會<br>7/26 小組長總聚</td>
+              <td class="px-4 py-3"></td>
+              <td class="px-4 py-3"></td>
+              <td class="px-4 py-3"></td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3">八月</td>
+              <td class="px-4 py-3">8/2 執事會<br>8/23 區長會議</td>
+              <td class="px-4 py-3">※ 8/2 父親節 (慶祝會)</td>
+              <td class="px-4 py-3"></td>
+              <td class="px-4 py-3"></td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3">九月</td>
+              <td class="px-4 py-3">9/6 執事會<br>9/27 小組長總聚</td>
+              <td class="px-4 py-3">※ 9/25~9/28 中秋節 / 教師節</td>
+              <td class="px-4 py-3">中秋晚會 (9/19)</td>
+              <td class="px-4 py-3"></td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3">十月</td>
+              <td class="px-4 py-3">10/4 執事會<br>10/25 區長會議</td>
+              <td class="px-4 py-3">※ 10/9~10 雙十節<br>10/25 光復節</td>
+              <td class="px-4 py-3"></td>
+              <td class="px-4 py-3"></td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3">十一月</td>
+              <td class="px-4 py-3">11/1 執事會<br>11/22 小組長總聚</td>
+              <td class="px-4 py-3">※ 11/26 感恩節</td>
+              <td class="px-4 py-3">探訪關懷 (11/? - 11/30)</td>
+              <td class="px-4 py-3"></td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3">十二月</td>
+              <td class="px-4 py-3">12/6 執事會<br>12/27 聖洗禮</td>
+              <td class="px-4 py-3">※ 12/25 行憲紀念日</td>
+              <td class="px-4 py-3">報佳音 (12/1~12/18)<br>聖誕慶祝活動 (12/25)</td>
+              <td class="px-4 py-3"></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-6 text-sm text-gray-600">
+        建議：此頁可放在教會網站的「活動/行事曆」分頁，並提供分享連結給同工。若需要我可幫你：匯出 CSV、自動新增到 Google Calendar 或導出 PDF 範本。
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-blue-800 text-white py-8 mt-8">
+    <div class="container mx-auto px-4 text-center">
+      <div class="mb-3">台南信義會靈糧堂 • 聯絡電話：06-3133100 • 教會信箱：c3133100@yahoo.com</div>
+      <div class="text-sm opacity-90">© 2026 台南信義會靈糧堂</div>
+    </div>
+  </footer>
+
+  <script>
+    // ------------- CSV / iCal 輔助函式 -------------
+    function tableToArray() {
+      const rows = document.querySelectorAll('#calendarTable tbody tr');
+      return Array.from(rows).map(r => Array.from(r.cells).map(td => td.innerText.trim().replace(/\n+/g, ' | ')));
+    }
+
+    function downloadCSV(){
+      const arr = tableToArray();
+      const header = ['月份','會議','節期','活動','課程／備註'];
+      const csv = [header, ...arr].map(r => r.map(cell=>`"${cell.replace(/"/g,'""') }"`).join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'tlc_2026_calendar.csv'; a.click(); URL.revokeObjectURL(url);
+    }
+
+    function monthToNumber(m){
+      const map = {'一月':'01','二月':'02','三月':'03','四月':'04','五月':'05','六月':'06','七月':'07','八月':'08','九月':'09','十月':'10','十一月':'11','十二月':'12'};
+      return map[m] || null;
+    }
+
+    function downloadICal(){
+      const rows = document.querySelectorAll('#calendarTable tbody tr');
+      let ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//tlc//2026calendar//ZH-TW\\n';
+      rows.forEach((r, idx) => {
+        const cells = Array.from(r.cells).map(c=>c.innerText.trim());
+        const month = cells[0];
+        const activity = cells[3] || cells[1];
+        const m = monthToNumber(month);
+        if(!m || !activity) return;
+        const dt = `2026${m}01T090000Z`;
+        ics += 'BEGIN:VEVENT\n';
+        ics += `UID:tlc-2026-${idx}@tlc.local\n`;
+        ics += `DTSTAMP:${dt}\n`;
+        ics += `DTSTART:${dt}\n`;
+        ics += `SUMMARY:${activity.replace(/\n/g,' ')}\n`;
+        ics += 'END:VEVENT\n';
+      });
+      ics += 'END:VCALENDAR';
+      const blob = new Blob([ics], {type:'text/calendar'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'tlc_2026_schedule.ics'; a.click(); URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
