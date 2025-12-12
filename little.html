@@ -1,313 +1,449 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>抽獎箱動畫 — 前五次16顆 + 第六次20顆 + 大獎 + 特大獎</title>
-<style>
-  body{margin:0;font-family:sans-serif;background:#071026;color:#e6eef8}
-  .wrap{max-width:1100px;margin:18px auto;padding:18px}
-  h1{margin:0 0 12px;font-size:1.25rem}
-  .controls{display:flex;gap:10px;align-items:center;margin-bottom:12px}
-  button{padding:10px 14px;border-radius:10px;border:0;background:#35d0ff;color:#04232f;font-weight:700;cursor:pointer}
-  button.ghost{background:transparent;color:#e6eef8;border:1px solid rgba(255,255,255,.2)}
-  button:disabled{opacity:0.4;cursor:not-allowed}
-  .canvas-wrap{position:relative;border-radius:12px;overflow:hidden;background:#0b1626;box-shadow:0 10px 30px rgba(0,0,0,.5)}
-  canvas{display:block;width:100%;height:600px}
-  #results{margin-top:16px;padding:12px;background:rgba(255,255,255,0.05);border-radius:8px}
-  .round{margin-bottom:8px}
-  .round strong{margin-right:6px;color:#35d0ff}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>抽彩球 — 200顆中抽三顆</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#f59e0b;--muted:#94a3b8}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans TC",Arial;color:#e6eef8;background:linear-gradient(180deg,var(--bg),#071023);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .app{width:100%;max-width:1100px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.7);}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+    h1{font-size:20px;margin:0}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    .stage{display:grid;grid-template-columns:1fr 340px;gap:16px}
+
+    /* Canvas area */
+    .canvas-wrap{background:linear-gradient(180deg,#071428 0%, #081226 100%);border-radius:12px;padding:12px;min-height:360px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.03)}
+    canvas{width:100%;height:360px;display:block}
+    .controls{display:flex;flex-direction:column;gap:10px}
+    .buttons{display:flex;gap:8px}
+    button{background:linear-gradient(180deg,var(--accent),#eab308);border:0;padding:10px 14px;border-radius:10px;color:#071022;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(229,158,24,0.12)}
+    button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#dbeafe;font-weight:600}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+
+    /* Right column */
+    .sidebar{display:flex;flex-direction:column;gap:12px}
+    .result-grid{display:flex;gap:10px;justify-content:center;align-items:center}
+    .ball-result{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#071022;background:linear-gradient(180deg,#fff,#ffd873);box-shadow:0 8px 20px rgba(0,0,0,0.45)}
+    .list{max-height:220px;overflow:auto;padding:8px}
+    .small{font-size:13px;color:var(--muted)}
+
+    footer{margin-top:12px;text-align:right;color:var(--muted);font-size:13px}
+
+    @media (max-width:900px){.stage{grid-template-columns:1fr;}.canvas-wrap{height:300px}canvas{height:300px}}
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>抽獎箱動畫（932～1082）</h1>
-  <div class="controls">
-    <button id="drawBtn">開始抽獎</button>
-    <button id="grandBtn" class="ghost" disabled>抽大獎</button>
-    <button id="superBtn" class="ghost" disabled>抽特大獎</button>
-    <button id="resetBtn" class="ghost">全部重置</button>
+  <div class="app" role="application">
+    <header>
+      <div>
+        <h1>抽彩球 — 200顆中抽三顆</h1>
+        <p class="lead">按下「開始抽籤」會播放特製音樂，動畫滾動後依序抽出三顆不重複的彩球。</p>
+      </div>
+    </header>
+
+    <div class="stage">
+      <div>
+        <div class="canvas-wrap panel">
+          <canvas id="c"></canvas>
+          <!-- overlay info -->
+          <div style="position:absolute;left:12px;top:12px;color:var(--muted);font-size:13px">總球數: <strong id="total">200</strong></div>
+          <div style="position:absolute;left:12px;bottom:12px;color:var(--muted);font-size:13px">已抽出: <span id="drawnCount">0</span></div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:12px">
+          <div class="panel" style="flex:1">
+            <div class="small">操作</div>
+            <div class="buttons" style="margin-top:8px">
+              <button id="startBtn">開始抽籤</button>
+              <button id="resetBtn" class="secondary">重設</button>
+            </div>
+            <div class="small" style="margin-top:8px">速度
+              <input id="speed" type="range" min="0.5" max="3" step="0.1" value="1" style="width:140px;vertical-align:middle;margin-left:8px">
+            </div>
+          </div>
+
+          <div class="panel" style="width:260px">
+            <div class="small">播放控制</div>
+            <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+              <button id="musicToggle" class="secondary">播放音樂</button>
+              <div id="status" style="flex:1;text-align:right;color:var(--muted)">靜止</div>
+            </div>
+            <div class="small" style="margin-top:8px"></div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="sidebar">
+        <div class="panel">
+          <div class="small">抽出結果</div>
+          <div class="result-grid" id="results" style="margin-top:10px">
+            <div class="ball-result" id="r1">—</div>
+            <div class="ball-result" id="r2">—</div>
+            <div class="ball-result" id="r3">—</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="small">已抽列表（最近 20 筆）</div>
+          <div class="list" id="log"></div>
+        </div>
+
+        <div class="panel">
+          <div class="small">設定</div>
+          <div style="margin-top:8px;font-size:13px">從 <input id="inputTotal" type="number" min="3" max="500" value="200" style="width:80px"> 顆中抽 <input id="inputPick" type="number" min="1" max="10" value="3" style="width:60px"></div>
+        </div>
+
+      </aside>
+    </div>
+
+    <footer>製作：HTML5 + Canvas • 支援觸控與滑鼠</footer>
   </div>
 
-  <div class="canvas-wrap" id="box">
-    <canvas id="c"></canvas>
-  </div>
-
-  <div id="results">
-    <h3>抽獎結果</h3>
-    <div id="rounds"></div>
-  </div>
-</div>
-
-<!-- 音效 -->
-<audio id="drawSound" src="images/prosounds.mp3" preload="auto"></audio>
-<audio id="grandSound" src="images/prosounds.mp3" preload="auto"></audio>
-
-<script>
-const MIN=932,MAX=1082;
-const BATCH16=16,BATCH20=20;
-const canvas=document.getElementById('c'),ctx=canvas.getContext('2d',{alpha:false});
-let W=1200,H=600;
-function resize(){
-  const dpr=window.devicePixelRatio||1;
-  W=canvas.clientWidth=canvas.parentElement.clientWidth;
-  H=600;
-  canvas.width=W*dpr;
-  canvas.height=H*dpr;
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-}
-window.addEventListener('resize',resize);
-resize();
-
-const COLORS=['#f97316','#fb7185','#60a5fa','#34d399','#f43f5e','#a78bfa','#f59e0b','#06b6d4'];
-
-class Ball{
-  constructor(num,x,y,vx,vy,r=20){
-    this.num=num;
-    this.x=x;
-    this.y=y;
-    this.vx=vx;
-    this.vy=vy;
-    this.r=r;
-    this.color=COLORS[Math.floor(Math.random()*COLORS.length)];
-    this.isPicked=false;
-    this.grandEffect=false;
-    this.effectTime=0;
-  }
-  draw(){
-    ctx.beginPath();
-    let radius=this.r;
-    let alpha=1;
-    let color=this.color;
-    if(this.grandEffect){
-      alpha=0.5+0.5*Math.sin(this.effectTime*10);
-      radius=this.r+10*Math.sin(this.effectTime*10);
-      color=`hsl(${this.effectTime*200%360},100%,50%)`;
+  <script>
+    // ====== Setup canvas and balls ======
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+    let DPR = window.devicePixelRatio || 1;
+    function resize(){
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * DPR);
+      canvas.height = Math.floor(rect.height * DPR);
+      ctx.setTransform(DPR,0,0,DPR,0,0);
     }
-    ctx.fillStyle=color;
-    ctx.globalAlpha=alpha;
-    ctx.arc(this.x,this.y,radius,0,Math.PI*2);
-    ctx.fill();
-    ctx.globalAlpha=1;
-    ctx.fillStyle='#021017';
-    ctx.font=`${radius*0.6}px sans-serif`;
-    ctx.textAlign='center';
-    ctx.textBaseline='middle';
-    ctx.fillText(this.num,this.x,this.y);
-  }
-  step(dt){
-    if(this.isPicked && !this.grandEffect) return;
-    this.x+=this.vx*dt;
-    this.y+=this.vy*dt;
-    if(this.x<this.r||this.x>W-this.r) this.vx*=-1;
-    if(this.y<this.r||this.y>H-this.r) this.vy*=-1;
-    if(this.grandEffect) this.effectTime+=dt;
-  }
-}
+    window.addEventListener('resize', resize);
 
-// 彩帶類
-class Confetti{
-  constructor(){
-    this.x=Math.random()*W;
-    this.y=-20;
-    this.w=6+Math.random()*4;
-    this.h=8+Math.random()*6;
-    this.color=COLORS[Math.floor(Math.random()*COLORS.length)];
-    this.speed=50+Math.random()*100;
-    this.angle=Math.random()*Math.PI*2;
-    this.spin=(Math.random()-0.5)*0.2;
-  }
-  step(dt){
-    this.y+=this.speed*dt;
-    this.angle+=this.spin;
-    if(this.y>H+20) this.dead=true;
-  }
-  draw(){
-    ctx.save();
-    ctx.translate(this.x,this.y);
-    ctx.rotate(this.angle);
-    ctx.fillStyle=this.color;
-    ctx.fillRect(-this.w/2,-this.h/2,this.w,this.h);
-    ctx.restore();
-  }
-}
+    // Ball model
+    class Ball {
+      constructor(n,x,y,r,angle,vx,vy){
+        this.n = n; this.x=x; this.y=y; this.r=r; this.angle=angle; this.vx=vx; this.vy=vy; this.color = this.pickColor(n);
+      }
+      pickColor(n){
+        // simple palette based on number
+        const palette = ["#f97316","#60a5fa","#34d399","#f472b6","#facc15","#a78bfa","#fb7185","#22c1c3"]
+        return palette[n % palette.length];
+      }
+      draw(ctx){
+        ctx.beginPath();
+        ctx.fillStyle = this.color;
+        ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+        ctx.fill();
+        // number
+        ctx.fillStyle = '#071022';
+        ctx.font = `${Math.max(12,this.r*0.8)}px system-ui`;
+        ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(this.n,this.x,this.y);
+      }
+    }
 
-let allNumbers=[];
-for(let i=MIN;i<=MAX;i++) allNumbers.push(i);
-let balls=[],confetti=[];
-function initBalls(){
-  balls=[];
-  for(const num of allNumbers){
-    const r=18+Math.random()*6;
-    const x=r+Math.random()*(W-2*r);
-    const y=r+Math.random()*(H-2*r);
-    const sp=40+Math.random()*60;
-    const a=Math.random()*Math.PI*2;
-    balls.push(new Ball(num,x,y,Math.cos(a)*sp,Math.sin(a)*sp,r));
-  }
-  confetti=[];
-}
+    // State
+    let balls = [];
+    let pool = [];
+    let animId=null;
+    let running=false;
+    let picks = [];
 
-function update(dt){
-  for(const b of balls)b.step(dt);
-  for(const c of confetti)c.step(dt);
-  confetti=confetti.filter(c=>!c.dead);
-}
-function render(){
-  ctx.fillStyle='#071226';
-  ctx.fillRect(0,0,W,H);
-  for(const b of balls)b.draw();
-  for(const c of confetti)c.draw();
-}
+    const totalEl = document.getElementById('total');
+    const drawnCountEl = document.getElementById('drawnCount');
+    const logEl = document.getElementById('log');
+    const r1 = document.getElementById('r1');
+    const r2 = document.getElementById('r2');
+    const r3 = document.getElementById('r3');
 
-let last=performance.now();
-function loop(t){
-  const dt=(t-last)/1000;
-  last=t;
-  update(dt);
-  render();
-  requestAnimationFrame(loop);
-}
-initBalls();
-requestAnimationFrame(loop);
+    const inputTotal = document.getElementById('inputTotal');
+    const inputPick = document.getElementById('inputPick');
+    const speedEl = document.getElementById('speed');
 
-function shuffle(a){
-  for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
-}
+    function resetPool(){
+      const total = Math.max(3, Math.min(500, Number(inputTotal.value)||200));
+      pool = Array.from({length:total}, (_,i)=>i+1);
+      totalEl.textContent = total;
+      drawnCountEl.textContent = 0;
+    }
 
-const rounds=document.getElementById('rounds');
-let round=0;
-const grandBtn=document.getElementById('grandBtn');
-const superBtn=document.getElementById('superBtn');
-let grandDrawn=false,superDrawn=false;
+    function rebuildBalls(){
+      balls = [];
+      const w = canvas.width / DPR;
+      const h = canvas.height / DPR;
+      const total = pool.length;
+      // show a subset visually (max 100) to keep animation smooth
+      const showCount = Math.min(120,total);
+      for(let i=0;i<showCount;i++){
+        const n = pool[(i*13) % total];
+        const r = 16 + (i%6);
+        const x = Math.random()*(w-2*r)+r;
+        const y = Math.random()*(h-2*r)+r;
+        const ang = Math.random()*Math.PI*2;
+        const vx = (Math.random()-0.5)*2;
+        const vy = (Math.random()-0.5)*2;
+        balls.push(new Ball(n,x,y,r,ang,vx,vy));
+      }
+    }
 
-// 抽獎（前5次抽16顆，第6次抽20顆）
-async function draw(){
-  const pool=balls.filter(b=>!b.isPicked);
-  if(pool.length===0){alert('沒有球可抽了');return;}
+    // ====== Audio (WebAudio) ======
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioContext();
+    let musicOn=false;
+    let bgGain = audioCtx.createGain();
+    bgGain.gain.value = 0.0;
+    bgGain.connect(audioCtx.destination);
 
-  const drawSound=document.getElementById('drawSound');
-  drawSound.currentTime=0;drawSound.play();
+    function playBackgroundLoop(){
+      // simple arpeggio loop
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(220, now);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.06, now+0.2);
+      osc.connect(gain);
+      gain.connect(bgGain);
+      // schedule gentle pitch changes
+      const root = 220;
+      for(let i=0;i<8;i++){
+        const t = now + i*0.25;
+        osc.frequency.linearRampToValueAtTime(root * Math.pow(2, (i%4)/12), t);
+      }
+      osc.start(now);
+      // stop later
+      osc.stop(now + 8);
+      // return promise-like object
+      return {osc, gain, stop: ()=>{try{osc.stop();}catch(e){}}};
+    }
 
-  shuffle(pool);
-  const take=(round<5)?Math.min(BATCH16,pool.length):Math.min(BATCH20,pool.length);
-  const selected=pool.slice(0,take);
-  for(const b of selected)b.isPicked=true;
+    function chime(){
+      const now = audioCtx.currentTime;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(800, now);
+      o.frequency.exponentialRampToValueAtTime(1200, now+0.12);
+      g.gain.setValueAtTime(0.001, now);
+      g.gain.exponentialRampToValueAtTime(0.25, now+0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, now+0.5);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(now); o.stop(now+0.6);
+    }
 
-  const nums=selected.map(b=>b.num);
-  const currentRound=round+1;
+    function celebrate(){
+      const now = audioCtx.currentTime;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(600, now);
+      o.frequency.exponentialRampToValueAtTime(1500, now+0.3);
+      g.gain.setValueAtTime(0.001, now);
+      g.gain.exponentialRampToValueAtTime(0.6, now+0.05);
+      g.gain.exponentialRampToValueAtTime(0.001, now+0.9);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(now); o.stop(now+1);
+    }
 
-  setTimeout(()=>{
-    round=currentRound;
-    let resultHtml=`<strong>第 ${round} 輪：</strong><br>`;
-    nums.forEach((num,idx)=>{
-      const prize=(round<=5)?(round-1)*BATCH16+(idx+1):(5*BATCH16+idx+1);
-      resultHtml+=`<span style="color:#facc11;font-weight:700">🏆 第${prize}獎 ${num}<br></span>`;
+    function boom(){
+      const now = audioCtx.currentTime;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(140, now);
+      o.frequency.exponentialRampToValueAtTime(30, now+0.6);
+      g.gain.setValueAtTime(0.001, now);
+      g.gain.exponentialRampToValueAtTime(0.4, now+0.03);
+      g.gain.exponentialRampToValueAtTime(0.001, now+0.8);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(now); o.stop(now+0.9);
+    }
+
+    // background loopkeeper
+    let bgLoop=null;
+    function setMusicOn(on){
+      musicOn = on;
+      if(on){
+        // resume audio context if needed (user gesture requirement)
+        audioCtx.resume();
+        // ramp gain
+        bgGain.gain.cancelScheduledValues(audioCtx.currentTime);
+        bgGain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime+0.5);
+        // create repeating short loops
+        if(!bgLoop){
+          bgLoop = setInterval(()=>{ playBackgroundLoop(); }, 1800);
+          playBackgroundLoop();
+        }
+        document.getElementById('musicToggle').textContent = '停止音樂';
+      } else {
+        bgGain.gain.cancelScheduledValues(audioCtx.currentTime);
+        bgGain.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime+0.6);
+        if(bgLoop){ clearInterval(bgLoop); bgLoop=null; }
+        document.getElementById('musicToggle').textContent = '播放音樂';
+      }
+    }
+
+    document.getElementById('musicToggle').addEventListener('click', ()=>{
+      setMusicOn(!musicOn);
     });
-    const div=document.createElement('div');
-    div.className='round';
-    div.innerHTML=resultHtml;
-    rounds.prepend(div);
-    if(round>=6 && !grandDrawn){
-      grandBtn.disabled=false;
+
+    // ====== Drawing and physics ======
+    function step(dt){
+      const w = canvas.width / DPR;
+      const h = canvas.height / DPR;
+      const speedMul = Number(speedEl.value) || 1;
+      for(const b of balls){
+        b.x += b.vx * speedMul * dt * 40;
+        b.y += b.vy * speedMul * dt * 40;
+        // bounce
+        if(b.x - b.r < 0){ b.x = b.r; b.vx *= -1; }
+        if(b.x + b.r > w){ b.x = w - b.r; b.vx *= -1; }
+        if(b.y - b.r < 0){ b.y = b.r; b.vy *= -1; }
+        if(b.y + b.r > h){ b.y = h - b.r; b.vy *= -1; }
+      }
     }
-  },10000);
-}
 
-// 抽大獎
-function drawGrandPrize(){
-  if(grandDrawn){alert('大獎已抽過');return;}
-  const pool=balls.filter(b=>!b.isPicked);
-  if(pool.length===0){alert('沒有剩餘號碼可抽！');return;}
-  shuffle(pool);
-  const lucky=pool[0];
-  lucky.grandEffect=true;
-  lucky.isPicked=true;
-  grandDrawn=true;
-  grandBtn.disabled=true;
+    let lastTime = performance.now();
+    function render(now){
+      const dt = (now - lastTime)/1000; lastTime = now;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      // background gradient
+      const g = ctx.createLinearGradient(0,0,0,canvas.height);
+      g.addColorStop(0,'rgba(255,255,255,0.02)'); g.addColorStop(1,'rgba(0,0,0,0.03)');
+      ctx.fillStyle=g; ctx.fillRect(0,0,canvas.width/DPR,canvas.height/DPR);
 
-  const grandSound=document.getElementById('grandSound');
-  grandSound.currentTime=0;grandSound.play();
-
-  let elapsed=0,duration=3;
-  const anim=()=>{
-    elapsed+=0.016;
-    if(elapsed>=duration){
-      balls=balls.filter(b=>b!==lucky);
-      const div=document.createElement('div');
-      div.className='round';
-      div.innerHTML=`<strong style="color:#facc15;font-size:1.2em">🎉 大獎號碼：</strong> <span style="color:#f87171;font-weight:700">${lucky.num}</span>`;
-      rounds.prepend(div);
-      superBtn.disabled=false; // 大獎抽完才能抽特大獎
-      return;
+      step(dt);
+      for(const b of balls){ b.draw(ctx); }
+      animId = requestAnimationFrame(render);
     }
-    requestAnimationFrame(anim);
-  }
-  anim();
-}
 
-// 抽特大獎（含彩帶效果）
-function drawSuperPrize(){
-  if(superDrawn){alert('特大獎已抽過');return;}
-  const pool=balls.filter(b=>!b.isPicked);
-  if(pool.length===0){alert('沒有剩餘號碼可抽！');return;}
-  shuffle(pool);
-  const lucky=pool[0];
-  lucky.grandEffect=true;
-  lucky.isPicked=true;
-  superDrawn=true;
-  superBtn.disabled=true;
+    // ====== Draw logic (pick N unique numbers with animation) ======
+    async function drawN(n){
+      if(running) return;
+      running = true; document.getElementById('status').textContent = '抽籤中...';
+      // ensure audio context resumed if user hasn't interacted
+      try{ await audioCtx.resume(); }catch(e){}
+      setMusicOn(true);
 
-  const grandSound=document.getElementById('grandSound');
-  grandSound.currentTime=0;grandSound.play();
+      const totalPick = Math.max(1, Math.min(10, Number(inputPick.value)||3));
+      const total = pool.length;
+      if(n > total) n = total;
 
-  // 彩帶生成
-  for(let i=0;i<200;i++){
-    setTimeout(()=>{confetti.push(new Confetti());},i*20);
-  }
+      const results = [];
+      for(let i=0;i<n;i++){
+        // fast spin animation: increase velocities temporarily
+        for(const b of balls){ b.vx = (Math.random()-0.5)*6; b.vy = (Math.random()-0.5)*6; }
+        // play quick arpeggio
+        playArpeggio(6, 0.04 + i*0.02);
+        // short spin for a bit
+        await wait(700 + i*300);
+        // pick a random one from pool
+        const idx = Math.floor(Math.random()*pool.length);
+        const num = pool.splice(idx,1)[0];
+        results.push(num);
+        // show selected as big chime in center
+        await highlightNumber(num, i);
+        celebrate();
+        document.getElementById('drawnCount').textContent = (Number(document.getElementById('drawnCount').textContent)||0)+1;
+        addLog(num);
+        // update small results area
+        updateResultTiles(results);
+      }
 
-  let elapsed=0,duration=5;
-  const anim=()=>{
-    elapsed+=0.016;
-    if(elapsed>=duration){
-      balls=balls.filter(b=>b!==lucky);
-      const div=document.createElement('div');
-      div.className='round';
-      div.innerHTML=`<strong style="color:#ff0;font-size:1.4em">🌟 特大獎號碼：</strong> <span style="color:#0ff;font-weight:900">${lucky.num}</span>`;
-      rounds.prepend(div);
-      return;
+      // finish
+      boom();
+      setMusicOn(false);
+      document.getElementById('status').textContent = '完成';
+      running=false;
+      return results;
     }
-    requestAnimationFrame(anim);
-  }
-  anim();
-}
 
-document.getElementById('drawBtn').onclick=draw;
-grandBtn.onclick=drawGrandPrize;
-superBtn.onclick=drawSuperPrize;
+    function playArpeggio(steps, baseDelay){
+      const now = audioCtx.currentTime;
+      for(let i=0;i<steps;i++){
+        const t = now + i*baseDelay;
+        const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+        o.type='sawtooth'; o.frequency.setValueAtTime(220*Math.pow(1.05946, i*2), t);
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.08, t+0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, t+0.18);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(t); o.stop(t+0.22);
+      }
+    }
 
-// 重置
-document.getElementById('resetBtn').onclick=()=>{
-  if(confirm('確定重置？')){
-    rounds.innerHTML='';
-    round=0;
-    grandDrawn=false;
-    superDrawn=false;
-    grandBtn.disabled=true;
-    superBtn.disabled=true;
-    initBalls();
-  }
-};
-</script>
+    function highlightNumber(num, order){
+      return new Promise(resolve=>{
+        const w = canvas.width / DPR; const h = canvas.height / DPR;
+        const start = performance.now();
+        const dur = 700;
+        const origBalls = balls.slice();
+        // animate a central big ball appearing
+        function frame(now){
+          const t = Math.min(1,(now-start)/dur);
+          // draw original
+          ctx.clearRect(0,0,canvas.width,canvas.height);
+          const g = ctx.createLinearGradient(0,0,0,canvas.height);
+          g.addColorStop(0,'rgba(255,255,255,0.02)'); g.addColorStop(1,'rgba(0,0,0,0.03)');
+          ctx.fillStyle=g; ctx.fillRect(0,0,canvas.width/DPR,canvas.height/DPR);
+          for(const b of origBalls){ b.draw(ctx); }
+          // big ball
+          const radius = 36 + 20*(1 - Math.abs(0.5 - t));
+          ctx.beginPath(); ctx.fillStyle = '#ffd873'; ctx.arc(w/2,h/2,radius,0,Math.PI*2); ctx.fill();
+          ctx.fillStyle='#071022'; ctx.font = `${Math.max(18,radius*0.8)}px system-ui`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(num,w/2,h/2);
+          if(t<1) requestAnimationFrame(frame); else resolve();
+        }
+        requestAnimationFrame(frame);
+      });
+    }
+
+    function wait(ms){return new Promise(r=>setTimeout(r,ms));}
+
+    function addLog(num){
+      const el = document.createElement('div');
+      el.textContent = `${new Date().toLocaleTimeString()} → ${num}`;
+      logEl.prepend(el);
+      // keep recent 50
+      while(logEl.children.length>50) logEl.lastChild.remove();
+    }
+
+    function updateResultTiles(arr){
+      const [a,b,c] = arr.concat(["—","—","—"]);
+      r1.textContent = a; r2.textContent = b; r3.textContent = c;
+    }
+
+    // ====== Utilities ======
+    function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a}
+
+    // ====== UI wiring ======
+    document.getElementById('startBtn').addEventListener('click', async ()=>{
+      // set total/pick from inputs
+      resetPool();
+      const pick = Math.max(1, Math.min(10, Number(inputPick.value)||3));
+      rebuildBalls();
+      // animate on canvas
+      if(animId) cancelAnimationFrame(animId);
+      resize(); lastTime = performance.now(); animId = requestAnimationFrame(render);
+      const results = await drawN(pick);
+      // ensure tiles updated
+      updateResultTiles(results);
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
+      // reset everything
+      resetPool(); rebuildBalls(); updateResultTiles([]);
+      logEl.textContent = '';
+      document.getElementById('status').textContent = '靜止';
+      setMusicOn(false);
+    });
+
+    inputTotal.addEventListener('change', ()=>{ resetPool(); rebuildBalls(); });
+    inputPick.addEventListener('change', ()=>{});
+
+    // ensure initial
+    resize(); resetPool(); rebuildBalls(); lastTime = performance.now(); animId = requestAnimationFrame(render);
+
+    // resume audio on first user gesture (some browsers require gesture to start AudioContext)
+    ['click','touchstart','keydown'].forEach(ev=>document.addEventListener(ev,function once(){audioCtx.resume(); document.removeEventListener(ev, once);}, {once:true}));
+
+  </script>
 </body>
 </html>
-
-
-
-
-
 
