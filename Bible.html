@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>年度讀經進度表</title>
+  <style>
+    body{
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:#f5f7fa;
+      margin:0;
+      padding:20px;
+      line-height:1.6;
+    }
+    h1{ text-align:center; }
+    details{
+      background:#fff;
+      border-radius:8px;
+      margin-bottom:16px;
+      box-shadow:0 2px 6px rgba(0,0,0,.08);
+      padding:8px 12px;
+    }
+    summary{
+      cursor:pointer;
+      font-size:1.2em;
+      font-weight:600;
+      padding:8px 0;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .progress{ font-size:14px; color:#2563eb; }
+    ul{ list-style:none; padding:0; margin:0; }
+    li{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:6px 0;
+      border-bottom:1px solid #eee;
+    }
+    li:last-child{ border-bottom:none; }
+    .done{ text-decoration:line-through; color:#888; }
+    footer{
+      text-align:center;
+      margin-top:30px;
+      font-size:.9em;
+      color:#666;
+    }
+  </style>
+</head>
+<body>
+
+<h1>年度讀經進度</h1>
+<div id="readingPlan"></div>
+<footer>✔ 勾選狀態會自動儲存在本機（localStorage）</footer>
+
+<script>
+const readings = [ 
+    {date:"1/1", text:"創世記 1–2 章"}, 
+    {date:"1/2", text:"創世記 3–5 章"}, 
+    {date:"1/3", text:"創世記 6–9 章"}, 
+    {date:"1/4", text:"創世記 10–11 章"}, 
+    {date:"1/5", text:"創世記 12–15 章"}, 
+    {date:"1/6", text:"創世記 16–19 章"}, 
+    {date:"1/7", text:"創世記 20–22 章"}, 
+    {date:"1/8", text:"創世記 23–26 章"}, 
+    {date:"1/9", text:"創世記 27–29 章"}, 
+    {date:"1/10", text:"創世記 30–32 章"}, 
+    {date:"1/11", text:"創世記 33–36 章"}, 
+    {date:"1/12", text:"創世記 37–39 章"}, 
+    {date:"1/13", text:"創世記 40–42 章"}, 
+    {date:"1/14", text:"創世記 43–46 章"}, 
+    {date:"1/15", text:"創世記 47–50 章"}, 
+    {date:"1/16", text:"約伯記 1–4 章"}, 
+    {date:"1/17", text:"約伯記 5–7 章"}, 
+    {date:"1/18", text:"約伯記 8–10 章"}, 
+    {date:"1/19", text:"約伯記 11–13 章"}, 
+    {date:"1/20", text:"約伯記 14–17 章"}, 
+    {date:"1/21", text:"約伯記 18–20 章"}, 
+    {date:"1/22", text:"約伯記 21–24 章"}, 
+    {date:"1/23", text:"約伯記 25–27 章"}, 
+    {date:"1/24", text:"約伯記 28–31 章"}, 
+    {date:"1/25", text:"約伯記 32–34 章"}, 
+    {date:"1/26", text:"約伯記 35–37 章"}, 
+    {date:"1/27", text:"約伯記 38–42 章"}, 
+    {date:"1/28", text:"出埃及記 1–4 章"}, 
+    {date:"1/29", text:"出埃及記 5–7 章"}, 
+    {date:"1/30", text:"出埃及記 8–10 章"},
+     {date:"1/31", text:"出埃及記 11–13 章"},
+    {date:"2/1", text:"出埃及記 14–17 章"},
+    {date:"2/2", text:"出埃及記 18–20 章"},
+    {date:"2/3", text:"出埃及記 21–24 章"},
+    {date:"2/4", text:"出埃及記 25–27 章"},
+    {date:"2/5", text:"出埃及記 28–31 章"},
+    {date:"2/6", text:"出埃及記 32–34 章"},
+    {date:"2/7", text:"出埃及記 35–37 章"},
+    {date:"2/8", text:"出埃及記 38–40 章"},
+    {date:"2/9", text:"利未記 1–4 章"},
+    {date:"2/10", text:"利未記 5–7 章"},
+    {date:"2/11", text:"利未記 8–10 章"},
+    {date:"2/12", text:"利未記 11–13 章"},
+    {date:"2/13", text:"利未記 14–16 章"},
+    {date:"2/14", text:"利未記 17–19 章"},
+    {date:"2/15", text:"利未記 20–23 章"},
+    {date:"2/16", text:"利未記 24–27 章"},
+    {date:"2/17", text:"民數記 1–3 章"},
+    {date:"2/18", text:"民數記 4–6 章"},
+    {date:"2/19", text:"民數記 7–10 章"},
+    {date:"2/20", text:"民數記 11–14 章"},
+    {date:"2/21", text:"民數記 15–17 章"},
+    {date:"2/22", text:"民數記 18–20 章"},
+    {date:"2/23", text:"民數記 21–24 章"},
+    {date:"2/24", text:"民數記 25–27 章"},
+    {date:"2/25", text:"民數記 28–30 章"},
+    {date:"2/26", text:"民數記 31–33 章"},
+    {date:"2/27", text:"民數記 34–36 章"},
+    {date:"2/28", text:"申命記 1–4 章"},
+
+    {date:"3/1", text:"申命記 5–6 章"},
+    {date:"3/2", text:"申命記 7–9 章"},
+    {date:"3/3", text:"申命記 10–12 章"},
+    {date:"3/4", text:"申命記 13–16 章"},
+    {date:"3/5", text:"申命記 17–19 章"},
+    {date:"3/6", text:"申命記 20–22 章"},
+    {date:"3/7", text:"申命記 23–25 章"},
+    {date:"3/8", text:"申命記 26–28 章"},
+    {date:"3/9", text:"申命記 29–31 章"},
+    {date:"3/10", text:"申命記 32–34 章"},
+    {date:"3/11", text:"約書亞記 1–3 章"},
+    {date:"3/12", text:"約書亞記 4–6 章"},
+    {date:"3/13", text:"約書亞記 7–9 章"},
+    {date:"3/14", text:"約書亞記 10–12 章"},
+    {date:"3/15", text:"約書亞記 13–15 章"},
+    {date:"3/16", text:"約書亞記 16–18 章"},
+    {date:"3/17", text:"約書亞記 19–21 章"},
+    {date:"3/18", text:"約書亞記 22–24 章"},
+    {date:"3/19", text:"士師記 1–4 章"},
+    {date:"3/20", text:"士師記 5–8 章"},
+    {date:"3/21", text:"士師記 9–12 章"},
+    {date:"3/22", text:"士師記 13–15 章"},
+    {date:"3/23", text:"士師記 16–18 章"},
+    {date:"3/24", text:"士師記 19–21 章"},
+    {date:"3/25", text:"路得記 1–4 章"},
+    {date:"3/26", text:"撒母耳記上 1–3 章"},
+    {date:"3/27", text:"撒母耳記上 4–7 章"},
+    {date:"3/28", text:"撒母耳記上 8–10 章"},
+    {date:"3/29", text:"撒母耳記上 11–13 章"},
+    {date:"3/30", text:"撒母耳記上 14–16 章"},
+    {date:"3/31", text:"撒母耳記上 17–20 章"},
+
+    {date:"4/1", text:"撒母耳記上 21–24 章"},
+    {date:"4/2", text:"撒母耳記上 25–28 章"},
+    {date:"4/3", text:"撒母耳記上 29–31 章"},
+    {date:"4/4", text:"撒母耳記下 1–4 章"},
+    {date:"4/5", text:"撒母耳記下 5–8 章"},
+    {date:"4/6", text:"撒母耳記下 9–12 章｜"},
+    {date:"4/7", text:"撒母耳記下 13–15 章"},
+    {date:"4/8", text:"撒母耳記下 16–18 章"},
+    {date:"4/9", text:"撒母耳記下 19–21 章"},
+    {date:"4/10", text:"撒母耳記下 22–24 章"},
+    {date:"4/11", text:"詩篇 1–3 篇"},
+    {date:"4/12", text:"詩篇 4–6 篇"},
+    {date:"4/13", text:"詩篇 7–9 篇"},
+    {date:"4/14", text:"詩篇 10–12 篇"},
+    {date:"4/15", text:"詩篇 13–15 篇"},
+    {date:"4/16", text:"詩篇 16–18 篇"},
+    {date:"4/17", text:"詩篇 19–21 篇"},
+    {date:"4/18", text:"詩篇 22–24 篇"},
+    {date:"4/19", text:"詩篇 25–27 篇"},
+    {date:"4/20", text:"詩篇 28–30 篇"},
+    {date:"4/21", text:"詩篇 31–33 篇"},
+    {date:"4/22", text:"詩篇 34–36 篇"},
+    {date:"4/23", text:"詩篇 37–39 篇"},
+    {date:"4/24", text:"詩篇 40–42 篇"},
+    {date:"4/25", text:"詩篇 43–45 篇"},
+    {date:"4/26", text:"詩篇 46–48 篇"},
+    {date:"4/27", text:"詩篇 49–51 篇"},
+    {date:"4/28", text:"詩篇 52–54 篇"},
+    {date:"4/29", text:"詩篇 55–57 篇"},
+    {date:"4/30", text:"詩篇 58–60 篇"},
+    {date:"5/1", text:"詩篇 61–63 篇"},
+    {date:"5/2", text:"詩篇 64–66 篇"},
+    {date:"5/3", text:"詩篇 67–69 篇"},
+    {date:"5/4", text:"詩篇 70–72 篇"},
+    {date:"5/5", text:"詩篇 73–75 篇"},
+    {date:"5/6", text:"詩篇 76–78 篇"},
+    {date:"5/7", text:"詩篇 79–81 篇"},
+    {date:"5/8", text:"詩篇 82–84 篇"},
+    {date:"5/9", text:"詩篇 85–87 篇"},
+    {date:"5/10", text:"詩篇 88–90 篇"},
+    {date:"5/11", text:"詩篇 91–93 篇"},
+    {date:"5/12", text:"詩篇 94–96 篇"},
+    {date:"5/13", text:"詩篇 97–99 篇"},
+    {date:"5/14", text:"詩篇 100–102 篇"},
+    {date:"5/15", text:"詩篇 103–105 篇"},
+    {date:"5/16", text:"詩篇 106–108 篇"},
+    {date:"5/17", text:"詩篇 109–111 篇"},
+    {date:"5/18", text:"詩篇 112–114 篇"},
+    {date:"5/19", text:"詩篇 115–118 篇"},
+    {date:"5/20", text:"詩篇 119 篇"},
+    {date:"5/21", text:"詩篇 120–123 篇"},
+    {date:"5/22", text:"詩篇 124–126 篇"},
+    {date:"5/23", text:"詩篇 127–129 篇"},
+    {date:"5/24", text:"詩篇 130–132 篇"},
+    {date:"5/25", text:"詩篇 133–135 篇"},
+    {date:"5/26", text:"詩篇 136–138 篇"},
+    {date:"5/27", text:"詩篇 139–141 篇"},
+    {date:"5/28", text:"詩篇 142–144 篇"},
+    {date:"5/29", text:"詩篇 145–147 篇"},
+    {date:"5/30", text:"詩篇 148–150 篇"},
+    {date:"5/31", text:"列王紀上 1–4 章"},
+    {date:"6/1", text:"箴言 1–3 章"},
+    {date:"6/2", text:"箴言 4–7 章"},
+    {date:"6/3", text:"箴言 8–11 章"},
+    {date:"6/4", text:"箴言 12–14 章"},
+    {date:"6/5", text:"箴言 15–18 章"},
+    {date:"6/6", text:"箴言 19–21 章"},
+    {date:"6/7", text:"箴言 22–24 章"},
+    {date:"6/8", text:"箴言 25–28 章"},
+    {date:"6/9", text:"箴言 29–31 章"},
+    {date:"6/10", text:"雅歌 1–4 章"},
+    {date:"6/11", text:"雅歌 5–8 章"},
+    {date:"6/12", text:"傳道書 1–3 章"},
+    {date:"6/13", text:"傳道書 4–6 章"},
+    {date:"6/14", text:"傳道書 7–9 章"},
+    {date:"6/15", text:"傳道書 10–12 章"},
+    {date:"6/16", text:"列王紀上 5–7 章"},
+    {date:"6/17", text:"列王紀上 8–10 章"},
+    {date:"6/18", text:"列王紀上 11–13 章"},
+    {date:"6/19", text:"列王紀上 14–16 章"},
+    {date:"6/20", text:"列王紀上 17–19 章"},
+    {date:"6/21", text:"列王紀上 20–22 章"},
+    {date:"6/22", text:"列王紀下 1–3 章"},
+    {date:"6/23", text:"列王紀下 4–6 章"},
+    {date:"6/24", text:"列王紀下 7–10 章"},
+    {date:"6/25", text:"列王紀下 11 章–14 章 20 節"},
+    {date:"6/26", text:"約珥書 1–3 章"},
+    {date:"6/27", text:"列王紀下 14 章 21–25 節; 約拿書 1–4 章"},
+    {date:"6/28", text:"列王紀下 14 章 26–29 節; 阿摩司書 1–3 章"},
+    {date:"6/29", text:"阿摩司書 4–6 章"},
+    {date:"6/30", text:"阿摩司書 7–9 章"},
+    {date:"7/1", text:"列王紀下 15–17 章"},
+    {date:"7/2", text:"何西阿書 1–4 章"},
+    {date:"7/3", text:"何西阿書 5–7 章"},
+    {date:"7/4", text:"何西阿書 8–10 章"},
+    {date:"7/5", text:"何西阿書 11–14 章"},
+    {date:"7/6", text:"列王紀下 18–19 章"},
+    {date:"7/7", text:"以賽亞書 1–3 章"},
+    {date:"7/8", text:"以賽亞書 4–6 章"},
+    {date:"7/9", text:"以賽亞書 7–9 章"},
+    {date:"7/10", text:"以賽亞書 10–12 章"},
+    {date:"7/11", text:"以賽亞書 13–15 章"},
+    {date:"7/12", text:"以賽亞書 16–18 章"},
+    {date:"7/13", text:"以賽亞書 19–21 章"},
+    {date:"7/14", text:"以賽亞書 22–24 章"},
+    {date:"7/15", text:"以賽亞書 25–27 章"},
+    {date:"7/16", text:"以賽亞書 28–30 章"},
+    {date:"7/17", text:"以賽亞書 31–33 章"},
+    {date:"7/18", text:"以賽亞書 34–36 章"},
+    {date:"7/19", text:"以賽亞書 37–39 章"},
+    {date:"7/20", text:"以賽亞書 40–42 章"},
+    {date:"7/21", text:"以賽亞書 43–45 章"},
+    {date:"7/22", text:"以賽亞書 46–48 章"},
+    {date:"7/23", text:"以賽亞書 49–51 章"},
+    {date:"7/24", text:"以賽亞書 52–54 章"},
+    {date:"7/25", text:"以賽亞書 55–57 章"},
+    {date:"7/26", text:"以賽亞書 58–60 章"},
+    {date:"7/27", text:"以賽亞書 61–63 章"},
+    {date:"7/28", text:"以賽亞書 64–66 章"},
+    {date:"7/29", text:"彌迦書 1–4 章"},
+    {date:"7/30", text:"彌迦書 5–7 章"},
+    {date:"7/31", text:"那鴻書 1–3 章"},
+    {date:"8/1", text:"列王紀下 20–21 章"},
+    {date:"8/2", text:"西番雅書 1–3 章"},
+    {date:"8/3", text:"哈巴谷書 1–3 章"},
+    {date:"8/4", text:"列王紀下 22–25 章"},
+    {date:"8/5", text:"俄巴底亞書 1 章; 耶利米書 1–2 章"},
+    {date:"8/6", text:"耶利米書 3–5 章"},
+    {date:"8/7", text:"耶利米書 6–8 章"},
+    {date:"8/8", text:"耶利米書 9–12 章"},
+    {date:"8/9", text:"耶利米書 13–16 章"},
+    {date:"8/10", text:"耶利米書 17–20 章"},
+    {date:"8/11", text:"耶利米書 21–23 章"},
+    {date:"8/12", text:"耶利米書 24–26 章"},
+    {date:"8/13", text:"耶利米書 27–29 章"},
+    {date:"8/14", text:"耶利米書 30–32 章"},
+    {date:"8/15", text:"耶利米書 33–36 章"},
+    {date:"8/16", text:"耶利米書 37–39 章"},
+    {date:"8/17", text:"耶利米書 40–42 章"},
+    {date:"8/18", text:"耶利米書 43–46 章"},
+    {date:"8/19", text:"耶利米書 47–49 章"},
+    {date:"8/20", text:"耶利米書 50–52 章"},
+    {date:"8/21", text:"耶利米書哀歌 1–5 章"},
+    {date:"8/22", text:"歷代志上 1–3 章"},
+    {date:"8/23", text:"歷代志上 4–6 章"},
+    {date:"8/24", text:"歷代志上 7–9 章"},
+    {date:"8/25", text:"歷代志上 10–13 章"},
+    {date:"8/26", text:"歷代志上 14–16 章"},
+    {date:"8/27", text:"歷代志上 17–19 章"},
+    {date:"8/28", text:"歷代志上 20–23 章"},
+    {date:"8/29", text:"歷代志上 24–26 章"},
+    {date:"8/30", text:"歷代志上 27–29 章"},
+    {date:"8/31", text:"歷代志下 1–3 章"},
+{date:"9/1", text:"歷代志下 4–6 章"},
+{date:"9/2", text:"歷代志下 7–9 章"},
+{date:"9/3", text:"歷代志下 10–13 章"},
+{date:"9/4", text:"歷代志下 14–16 章"},
+{date:"9/5", text:"歷代志下 17–19 章"},
+{date:"9/6", text:"歷代志下 20–22 章"},
+{date:"9/7", text:"歷代志下 23–25 章"},
+{date:"9/8", text:"歷代志下 26–29 章"},
+{date:"9/9", text:"歷代志下 30–32 章"},
+{date:"9/10", text:"歷代志下 33–36 章"},
+{date:"9/11", text:"以西結書 1–3 章"},
+{date:"9/12", text:"以西結書 4–7 章"},
+{date:"9/13", text:"以西結書 8–11 章"},
+{date:"9/14", text:"以西結書 12–14 章"},
+{date:"9/15", text:"以西結書 15–18 章"},
+{date:"9/16", text:"以西結書 19–21 章"},
+{date:"9/17", text:"以西結書 22–24 章"},
+{date:"9/18", text:"以西結書 25–27 章"},
+{date:"9/19", text:"以西結書 28–30 章"},
+{date:"9/20", text:"以西結書 31–33 章"},
+{date:"9/21", text:"以西結書 34–36 章"},
+{date:"9/22", text:"以西結書 37–39 章"},
+{date:"9/23", text:"以西結書 40–42 章"},
+{date:"9/24", text:"以西結書 43–45 章"},
+{date:"9/25", text:"以西結書 46–48 章"},
+{date:"9/26", text:"但以理書 1–3 章"},
+{date:"9/27", text:"但以理書 4–6 章"},
+{date:"9/28", text:"但以理書 7–9 章"},
+{date:"9/29", text:"但以理書 10–12 章"},
+{date:"9/30", text:"以斯帖記 1–3 章"},
+{date:"10/1", text:"以斯帖記 4–7 章"},
+{date:"10/2", text:"以斯帖記 8–10 章"},
+{date:"10/3", text:"以斯拉記 1–4 章"},
+{date:"10/4", text:"哈該書 1–2 章;撒迦利亞書 1–2 章"},
+{date:"10/5", text:"撒迦利亞書 3–6 章"},
+{date:"10/6", text:"撒迦利亞書 7–10 章"},
+{date:"10/7", text:"撒迦利亞書 11–14 章"},
+{date:"10/8", text:"以斯拉記 5–7 章"},
+{date:"10/9", text:"以斯拉記 8–10 章"},
+{date:"10/10", text:"尼希米記 1–3 章"},
+{date:"10/11", text:"尼希米記 4–6 章"},
+{date:"10/12", text:"尼希米記 7–9 章"},
+{date:"10/13", text:"尼希米記 10–13 章"},
+{date:"10/14", text:"瑪拉基書 1–4 章"},
+{date:"10/15", text:"馬太福音 1–4 章"},
+{date:"10/16", text:"馬太福音 5–7 章"},
+{date:"10/17", text:"馬太福音 8–11 章"},
+{date:"10/18", text:"馬太福音 12–15 章"},
+{date:"10/19", text:"馬太福音 16–19 章"},
+{date:"10/20", text:"馬太福音 20–22 章"},
+{date:"10/21", text:"馬太福音 23–25 章"},
+{date:"10/22", text:"馬太福音 26–28 章"},
+{date:"10/23", text:"馬可福音 1–3 章"},
+{date:"10/24", text:"馬可福音 4–6 章"},
+{date:"10/25", text:"馬可福音 7–10 章"},
+{date:"10/26", text:"馬可福音 11–13 章"},
+{date:"10/27", text:"馬可福音 14–16 章"},
+{date:"10/28", text:"路加福音 1–3 章"},
+{date:"10/29", text:"路加福音 4–6 章"},
+{date:"10/30", text:"路加福音 7–9 章"},
+{date:"10/31", text:"路加福音 10–13 章"},
+{date:"11/1", text:"路加福音 14–17 章"},
+{date:"11/2", text:"路加福音 18–21 章"},
+{date:"11/3", text:"路加福音 22–24 章"},
+{date:"11/4", text:"約翰福音 1–3 章"},
+{date:"11/5", text:"約翰福音 4–6 章"},
+{date:"11/6", text:"約翰福音 7–10 章"},
+{date:"11/7", text:"約翰福音 11–13 章"},
+{date:"11/8", text:"約翰福音 14–17 章"},
+{date:"11/9", text:"約翰福音 18–21 章"},
+{date:"11/10", text:"使徒行傳 1–2 章"},
+{date:"11/11", text:"使徒行傳 3–5 章"},
+{date:"11/12", text:"使徒行傳 6–9 章"},
+{date:"11/13", text:"使徒行傳 10–12 章"},
+{date:"11/14", text:"使徒行傳 13–14 章"},
+{date:"11/15", text:"雅各書 1–2 章"},
+{date:"11/16", text:"雅各書 3–5 章"},
+{date:"11/17", text:"加拉太書 1–3 章"},
+{date:"11/18", text:"加拉太書 4–6 章"},
+{date:"11/19", text:"使徒行傳 15 章 1 節–18 章 11 節"},
+{date:"11/20", text:"帖撒羅尼迦前書 1–5 章"},
+{date:"11/21", text:"帖撒羅尼迦後書 1–5 章;使徒行傳 18 章 12 節–19 章 10 節"},
+{date:"11/22", text:"哥林多前書 1–4 章"},
+{date:"11/23", text:"哥林多前書 5–8 章"},
+{date:"11/24", text:"哥林多前書 9–12 章"},
+{date:"11/25", text:"哥林多前書 13–16 章"},
+{date:"11/26", text:"使徒行傳 19 章 11 節–20 章 1 節;哥林多後書 1–3 章"},
+{date:"11/27", text:"哥林多後書 4–6 章"},
+{date:"11/28", text:"哥林多後書 7–9 章"},
+{date:"11/29", text:"哥林多後書 10–13 章"},
+{date:"11/30", text:"使徒行傳 20 章 2 節;羅馬書 1–4 章"},
+{date:"12/1", text:"羅馬書 5–8 章"},
+{date:"12/2", text:"羅馬書 9–11 章"},
+{date:"12/3", text:"羅馬書 12–16 章"},
+{date:"12/4", text:"使徒行傳 20 章 3 節–22 章 30 節"},
+{date:"12/5", text:"使徒行傳 23–25 章"},
+{date:"12/6", text:"使徒行傳 26–28 章"},
+{date:"12/7", text:"以弗所書 1–3 章"},
+{date:"12/8", text:"以弗所書 4–6 章"},
+{date:"12/9", text:"歌羅西書 1–4 章"},
+{date:"12/10", text:"腓立比書 1–4 章"},
+{date:"12/11", text:"腓利門書 1 章;提摩太前書 1–3 章"},
+{date:"12/12", text:"提摩太前書 4–6 章"},
+{date:"12/13", text:"提多書 1–3 章"},
+{date:"12/14", text:"提摩太後書 1–4 章"},
+{date:"12/15", text:"彼得前書 1–2 章"},
+{date:"12/16", text:"彼得前書 3–5 章"},
+{date:"12/17", text:"彼得後書 1–3 章"},
+{date:"12/18", text:"希伯來書 1–4 章"},
+{date:"12/19", text:"希伯來書 5–7 章"},
+{date:"12/20", text:"希伯來書 8–10 章"},
+{date:"12/21", text:"希伯來書 11–13 章"},
+{date:"12/22", text:"約翰壹書 1–2 章"},
+{date:"12/23", text:"約翰壹書 3–5 章"},
+{date:"12/24", text:"約翰貳書;約翰參書;猶大書"},
+{date:"12/25", text:"啟示錄 1–3 章"},
+{date:"12/26", text:"啟示錄 4–6 章"},
+{date:"12/27", text:"啟示錄 7–9 章"},
+{date:"12/28", text:"啟示錄 10–12 章"},
+{date:"12/29", text:"啟示錄 13–15 章"},
+{date:"12/30", text:"啟示錄 16–18 章"},
+{date:"12/31", text:"啟示錄 19–22 章"}
+    ];
+</script>
+
+<script>
+// === 讀經資料（原封不動保留） ===
+const data = "+JSON.stringify([])+";
+</script>
+
+<script>
+const readingsData = "+JSON.stringify([])+";
+</script>
+
+<script>
+const readingsList = "+JSON.stringify([])+";
+</script>
+
+<script>
+// ===== 正式資料 =====
+const readings = "+JSON.stringify(require('fs') ? [] : [])+";
+</script>
+
+<script>
+const saved = JSON.parse(localStorage.getItem("readingDone") || "{}");
+const container = document.getElementById("readingPlan");
+
+const grouped = {};
+readings.forEach(r => {
+  const m = r.date.split("/")[0];
+  if(!grouped[m]) grouped[m] = [];
+  grouped[m].push(r);
+});
+
+function updateMonthProgress(month){
+  const total = grouped[month].length;
+  const done = grouped[month].filter(r => saved[r.date]).length;
+  const percent = total ? Math.round(done / total * 100) : 0;
+  const el = document.getElementById(`progress-${month}`);
+  if(el) el.textContent = percent + "%";
+}
+
+Object.keys(grouped).forEach(month => {
+  const details = document.createElement("details");
+  const summary = document.createElement("summary");
+  summary.innerHTML = `${month} 月讀經進度 <span class='progress' id='progress-${month}'>0%</span>`;
+  details.appendChild(summary);
+
+  const ul = document.createElement("ul");
+
+  grouped[month].forEach(item => {
+    const key = item.date;
+    const li = document.createElement("li");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = !!saved[key];
+
+    const span = document.createElement("span");
+    span.textContent = `${item.date}　${item.text}`;
+    if(checkbox.checked) span.classList.add("done");
+
+    checkbox.addEventListener("change", () => {
+      saved[key] = checkbox.checked;
+      localStorage.setItem("readingDone", JSON.stringify(saved));
+      span.classList.toggle("done", checkbox.checked);
+      updateMonthProgress(month);
+    });
+
+    li.appendChild(checkbox);
+    li.appendChild(span);
+    ul.appendChild(li);
+  });
+
+  details.appendChild(ul);
+  container.appendChild(details);
+  updateMonthProgress(month);
+});
+</script>
+
+</body>
+</html>
