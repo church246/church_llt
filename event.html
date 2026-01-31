@@ -165,8 +165,29 @@
       </div>
 
       </section>
-  
-</main>
+<h1>2026年會友大會手冊</h1>
+
+<img src="images/church_2.jpg" width="100px">
+
+<br><br>
+
+<label>請輸入密碼：</label>
+<input type="password" id="pwd" placeholder="輸入後按 Enter">
+
+<script>
+document.getElementById("pwd").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") {
+    const password = "3133100"; // ← 自訂密碼
+    if (this.value === password) {
+      window.open("../PDF/Conference_Manual_2026.pdf", "_blank");
+    } else {
+      alert("密碼錯誤，請再試一次");
+      this.value = "";
+    }
+  }
+});
+</script>
+  </main>
 
 <script>
     // ------------- CSV / iCal 輔助函式 -------------
