@@ -179,7 +179,7 @@ document.getElementById("pwd").addEventListener("keydown", function(e) {
   if (e.key === "Enter") {
     const password = "3133100"; // ← 自訂密碼
     if (this.value === password) {
-      window.open("../PDF/Conference_Manual_2026.pdf", "_blank");
+      window.open("/PDF/Conference_Manual_2026.pdf", "_blank");
     } else {
       alert("密碼錯誤，請再試一次");
       this.value = "";
