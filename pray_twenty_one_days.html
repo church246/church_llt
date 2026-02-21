@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 21天禁禱守望 - 轉化與復興</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+        .day-card.active { border: 2px solid #fbbf24; background-color: #fffbeb; transform: scale(1.05); }
+        .progress-ring { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        
+        /* 列印優化：確保中文不亂碼且格式精美 */
+        @media print {
+            nav, button, section:not(#print-report), .no-print, footer, #daySelector, textarea { display: none !important; }
+            #print-report { display: block !important; width: 100%; }
+            body { background: white; }
+            .page-break { page-break-after: always; }
+        }
+        #print-report { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-900">
+
+    <nav class="gradient-bg text-white p-4 sticky top-0 z-50 shadow-lg no-print">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold tracking-wider">2026 21天禁禱</h1>
+            <div class="space-x-4 text-sm">
+                <a href="#dashboard" class="hover:text-yellow-300">進度</a>
+                <a href="#daily" class="hover:text-yellow-300">內容</a>
+                <button onclick="generatePDF()" class="bg-red-500 px-3 py-1 rounded font-bold hover:bg-red-600 transition">匯出PDF</button>
+            </div>
+        </div>
+    </nav>
+
+    <section id="vision" class="py-12 bg-white text-center no-print">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-blue-900 mb-4">21天為台灣禁食守望禱告 (3/2~3/22)</h2>
+            <p class="italic text-blue-700 mb-4">「你當剛強壯膽！不要懼怕，也不要驚惶；因為你無論往哪裡去，耶和華你的神必與你同在。」— 約書亞記 1:9</p>
+            <p class="max-w-2xl mx-auto text-gray-600 mb-8">從「自潔」到「爭戰」，透過禁食與宣告，為復興預備道路。</p>
+            <button onclick="signVow()" class="bg-yellow-500 hover:bg-yellow-600 text-white px-8 py-3 rounded-full font-bold shadow-lg transition">
+                <i class="fas fa-pen-nib mr-2"></i>簽署拿細耳人誓約
+            </button>
+        </div>
+    </section>
+
+    <section id="dashboard" class="py-12 bg-gray-100 no-print">
+        <div class="container mx-auto px-4 grid md:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-2xl shadow-md text-center">
+                <h3 class="font-bold mb-4">個人守望進度</h3>
+                <div class="relative w-32 h-32 mx-auto mb-2">
+                    <svg class="w-full h-full">
+                        <circle class="text-gray-200" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="64" cy="64"/>
+                        <circle id="progressCircle" class="text-blue-500 progress-ring" stroke-width="8" stroke-dasharray="314" stroke-dashoffset="314" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="64" cy="64"/>
+                    </svg>
+                    <span id="progressText" class="absolute inset-0 flex items-center justify-center text-xl font-bold">0%</span>
+                </div>
+                <p class="text-sm text-gray-500">已完成 <span id="completedDays">0</span> / 21 天</p>
+            </div>
+
+            <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-md">
+                <h3 class="font-bold text-lg mb-4 text-blue-800"><i class="fas fa-check-square mr-2"></i>今日檢核 (第 <span id="currentDayLabel">1</span> 天)</h3>
+                <div class="space-y-4">
+                    <div class="flex gap-4">
+                        <label class="flex-1 flex items-center p-3 border rounded-lg hover:bg-blue-50 cursor-pointer">
+                            <input type="checkbox" id="checkFast" class="w-5 h-5 text-blue-600"> <span class="ml-2">完成禁食</span>
+                        </label>
+                        <label class="flex-1 flex items-center p-3 border rounded-lg hover:bg-blue-50 cursor-pointer">
+                            <input type="checkbox" id="checkPray" class="w-5 h-5 text-blue-600"> <span class="ml-2">完成禱告</span>
+                        </label>
+                    </div>
+                    <textarea id="dailyNote" placeholder="今日靈修筆記與感言..." class="w-full p-4 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none h-32"></textarea>
+                    <button onclick="saveToday()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition shadow-md">儲存今日紀錄</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="daily" class="py-12 bg-white no-print">
+        <div class="container mx-auto px-4">
+            <h3 class="text-2xl font-bold mb-6 border-l-4 border-yellow-500 pl-4">每日禱告指引</h3>
+            <div id="daySelector" class="flex overflow-x-auto space-x-3 pb-4 mb-8"></div>
+
+            <div id="dailyContent" class="bg-blue-50 p-8 rounded-3xl border border-blue-100 min-h-[300px] shadow-inner">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="flex-[2]">
+                        <span id="contentPhase" class="bg-blue-200 text-blue-800 text-xs font-bold px-3 py-1 rounded-full uppercase">第一階段：自潔</span>
+                        <h4 id="contentTitle" class="text-2xl font-bold text-blue-900 mt-3 mb-4 tracking-tight">載入中...</h4>
+                        <div id="contentScripture" class="italic text-blue-800 font-medium border-l-4 border-blue-300 pl-4 mb-6 bg-blue-100/50 p-3 rounded-r-lg"></div>
+                        <p id="contentFocus" class="text-gray-700 leading-relaxed text-lg whitespace-pre-wrap"></p>
+                    </div>
+                    <div class="flex-1 bg-white p-6 rounded-2xl shadow-sm border-t-4 border-red-400">
+                        <h5 class="font-bold text-red-600 mb-3 text-lg"><i class="fas fa-bullhorn mr-2"></i>核心宣告：</h5>
+                        <p id="contentPrayer" class="text-gray-800 leading-relaxed font-medium bg-red-50 p-4 rounded-lg"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="print-report" class="p-8">
+        <h1 style="text-align:center; color:#1e3a8a; font-size:28px;">2026 21天禁禱守望紀錄報告</h1>
+        <p style="text-align:center; border-bottom:2px solid #1e3a8a; padding-bottom:10px;">願神的國度降臨在台灣與亞洲</p>
+        <div id="print-list" style="margin-top:20px;"></div>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-8 text-center no-print">
+        <p class="text-sm opacity-60">© 2026 21天禁食禱告運動 | 願國度降臨</p>
+    </footer>
+
+      <script>
+        // 模擬數據
+        const dailyData = {
+            1: { phase: "自潔", title: "禁食的角色", scripture: "馬太福音9:14-15", focus: "禁食是聖經中的重要屬靈操練，不是宗教形式，而是出於對主深切的渴慕。耶穌教導門徒在祂離開後要禁食，表達對神同在的渴求。禁食使人謙卑、更新心志、加深禱告能力，並帶來屬靈突破。真正的禁食不是為功德或復興計畫，而是專心尋求神、以神的話為糧，盼望主再次造訪、群體復興、百姓重新因祂喜樂。", prayer: "主啊，藉著禁食、哭泣與哀慟，我們全心回轉向祢。求祢光照並鑒察我們的內心，顯明一切偏離祢的地方，以及那些不夠真實渴慕祢的角落。我們今天立定心志，要專心尋求祢，並為在禁食與禱告中一切錯誤的動機與心中的偶像向祢悔改。主啊，我們渴望祢像在過去世代那樣大能地作為，再次造訪這個國家，帶來更新與復興。聖靈啊，求祢再來！聖靈啊，求祢再來！" },
+            2: { phase: "自潔", title: "轉化的心思意念", scripture: "羅馬書 12:2", focus: "呼求神除去我們眼中的樑木，用聖潔的愛看待亞洲的局勢本文指出在壓力與局勢緊張中，屬靈分辨更重要也更困難。人容易把個人立場、恐懼與政治文化期待摻入禱告，將盼望錯置。依據羅馬書第12章，真正的分辨來自心意更新與降服，使心思與聖靈對齊。神呼召信徒在關注現實的同時，保持內在潔淨與謙卑，讓禱告不出於情緒反應，而源於啟示與神的旨意。除去摻雜、專注於神，禱告就更清晰、有權柄。", prayer: "聖潔的神，我們來到祢面前，邀請祢鑒察並更新我們的內在生命，光照一切影響我們分辨與禱告的摻雜，無論是出於恐懼、偏見或錯置的忠誠，我們都向祢悔改並重新歸向祢；求祢釋放我們得著自由，除去一切攔阻我們清楚聽見祢、與祢心意對齊的因素。主啊，我們將文化與立場的依附交託給祢，讓盼望重新單單聚焦在祢身上，使我們的心思與真理對齊，不被情緒與偏好牽引。也懇求祢賜給教會清楚的分辨力與合一的心，在聖靈帶領中，以謙卑與信心同心代求；潔淨我們的眼光與動機，使我們心中有真理、禱告有清晰，能按著祢此刻的旨意同聲禱告。阿們。"},
+            3: { phase: "自潔", title: "禱告神的旨意,而非我們的", scripture: "馬太福音6:9-13", focus: "門徒的禱告不是儀式性的背誦，而是與神旨意對齊的生命操練。神在我們祈求以先已知需要，禱告不是告知或說服祂，而是先尋求祂的名、國與旨意。當禱告以神為中心，個人需要才被正確安放；在神旨意清楚時，我們的禱告就成為與神同工的回應，帶著信心而非猜測。禱告的核心是關係與相交，引導人降服，使焦點從己意轉向神旨成全。", prayer: "天父，祢在我們開口以先已知我們所需，卻仍邀請我們禱告。求祢教導我們尋求祢的旨意勝過自己的意思，使我們的心與祢對齊，並訓練我們爭取祢所渴望的。求祢顯明我們個人渴望已取代祢旨意的地方，幫助教會在分辨力上成長，學習認出並同心爭取那些神已讓我們知曉的旨意。願我們的禱告被降服、信靠與對祢本性的確信塑造，使祢的旨意在我們生命中、在台灣如同在天上一樣成全。阿們。"},
+            4: { phase: "自潔", title: "前往城牆的呼召", scripture: "尼西米記(尼 4:14,新譯本)", focus: "尼希米在重建耶路撒冷城牆時，面對四面威脅仍呼召百姓同心合一，將各家安排在靠近自家房屋的城牆段落，提醒他們神的工作與家庭、鄰舍和未來緊密相連。這教導我們，代禱不是個人行動，而是為弟兄姊妹、孩童、長者和教會共同站立。合一需要選擇責任與盟約勝過安逸與恐懼，彼此連結、同心信靠神爭戰。當台灣的代求者在禱告中就位，我們為彼此、為全體信徒站立，神便釋放保護、智慧與力量，使禱告具有屬靈權柄。", prayer: "主耶穌，祢曾禱告願祢的百姓成為一，如同祢與父原為一。在這時刻，求祢教導台灣的教會同心站立，救我們脫離孤立、恐懼與分裂，塑造我們成為彼此代求、彼此守望的群體。求祢賜下對教會、家庭與領袖的責任心，超越個人圈子，使我們的心、禱告與目標都與祢對齊。當我們一同站在城牆上，我們信靠祢必為我們爭戰。阿們。"},
+            5: { phase: "自潔", title: "重塑危機的禱告", scripture: "歷代志下20:9", focus: "聖經教導，掌權的是神，禱告能塑造危機的結果。歷代志下20章記載，約沙法王面對國家危機，並未先依靠軍事策略，而是「懼怕，定意尋求耶和華」，召集全民禱告，仰望神的主權、應許與盟約。約沙法宣告：「我們也不知道怎樣行，我的眼目單仰望你。」神以先知性話語回應，成就祂的爭戰，仇敵自相殘殺，危機反而成為見證。這提醒我們，禱告能改變局勢，歷史被神扭轉，台灣面對挑戰時，唯有定睛仰望主，才能經歷祂的拯救與彰顯。", prayer: "神啊，我們承認自己不知道該怎麼行，但我們的眼目單仰望祢。我們作為合一的百姓聚集在祢面前，在急難中向祢呼求。求祢按著祢的憐憫與旨意來塑造這場危機，為國家領袖與代求者爭戰，使全國興起以聖經為根基的禱告聚集，並將迫在眉睫的危機翻轉為祢拯救的見證，使祢的名在這地得著尊榮與大彰。阿們。"},
+            6: { phase: "自潔", title: "台灣需要代禱者(上)", scripture: "以賽亞書59:14-16&希伯來書4:16", focus: "以賽亞描繪以色列歷史中真理崩塌、邪惡盛行的時刻，最明顯的問題是缺乏代求者。代禱不是消極關心，而是有意識地靠近權柄，為他人提出請求。當神百姓不站在破口時，社會的崩壞就映照出禱告的衰微。然而，這並非絕望，耶和華親自施行拯救，最終藉著耶穌基督完全恢復通往神的道路。希伯來書4:16宣告，信徒可坦然來到施恩寶座前，代禱者正是那些認真承擔這權柄的人。台灣今天同樣需要願意在真理與公義受壓時，站在破口、竭力代求的人。", prayer: "主啊，祢曾尋找代禱者卻找不著一位，如今藉著耶穌，通往祢面前的道路已完全敞開。求祢賜我們信心，放膽親近祢，不只為自己，也為他人代求，並為因猶豫或倚靠自己而未能勇敢代求的地方悔改。求祢教導台灣教會重新理解代求的意義——這不是特殊角色，而是共同的呼召，代表國家站在祢面前。在這關鍵時刻，求祢為台灣興起守望者，藉著禱告在各領域爭取真理、正義與公義，使祢的旨意在這土地完全成就。阿們。"},
+            7: { phase: "自潔", title: "台灣需要代禱者(下)", scripture: "提摩太前書2:1-4&以弗所書2:10-12", focus: "門徒的禱告不是儀式性的背誦，而是與神旨意對齊的生命操練。神在我們祈求以先已知需要，禱告不是告知或說服祂，而是先尋求祂的名、國與旨意。當禱告以神為中心，個人需要才被正確安放；在神旨意清楚時，我們的禱告就成為與神同工的回應，帶著信心而非猜測。禱告的核心是關係與相交，引導人降服，使焦點從己意轉向神旨成全。", prayer: "主啊，縱使權勢發怒、抵擋加劇之時，祢仍邀請我們放膽無懼地來到祢面前。求祢教導我們帶著勇氣與清晰代求，堅固我們持續代禱的決心。當屬地與屬靈勢力爭奪影響力時，使我們錨定在祢的權柄之中，代表台灣站立在祢面前，信靠祢的旨意高過一切敵對勢力。求祢建立公義，約束不公，在此時此刻成就祢的心意。阿們。"},
+            8: { phase: "差派", title: "更美的寶血", scripture: "希伯來書12:24", focus: "自創世以來，血帶著聲音：亞伯的血呼求公義，而耶穌的血宣告憐憫、和好與生命。無辜之血揭示罪惡與暴力，玷污土地，也引起神的關注；但十字架上的血成就正義，釋放赦免與盼望。在台灣，歷史與現實中流血的痕跡提醒我們，土地記得，神也在傾聽。今日，神尋找代禱者，帶著信心站立代表這地呼求憐憫。耶穌的血提供合法的根基，使憐憫得以施行、時間延續、死亡循環被中斷。在弟兄對立與無辜受害之處，耶穌的血比控告更響亮，宣告和平與生命。為台灣，我們呼求這更美的信息彰顯。", prayer: "天憐憫的父啊，我們在祢面前謙卑自己，承認我們迫切需要祢的憐恤。感謝耶穌，祂憐憫的心與寶血在衝突、分裂與無辜之血流出之地宣告憐憫、醫治與和好。我們將透過暴力、衝突以及奪取未出生生命所流的無辜之血帶到祢面前，呼求耶穌的血在這地施行潔淨、約束與憐憫。願祂的血在分裂、敵意與死亡肆虐之處宣告和平，介入暴力與失序的循環，釋放和好、醫治，並更新我們對生命的敬意。我們信靠祢的心意，安息在祢的憐憫中。阿們。"},
+            9: { phase: "差派", title: "在動盪中聆聽神", scripture: "使徒行傳16:9-10&18:9-11", focus: "保羅第二次宣教旅程的開始與結束，都因神的異象而轉向—這細節極重要。即便經驗豐富、深諳苦難，保羅仍需當下的指引。在使徒行傳16章，他原計畫往東行，卻被聖靈攔阻，夜間異象指向馬其頓；在18章，面對哥林多的逼迫與危險，夜間異象卻命令他留下。這提醒我們：直覺、邏輯、過往經驗都無法取代神當下的聲音。成熟不是自給自足，而是持續聆聽、順服更新的生命。方向不是一次領受便可沿用，而是在交通與禱告中不斷調整。保羅的例子呼召我們放慢腳步，拒絕自動駕駛，問主此刻對台灣說什麼，正值21天禁食的關鍵時刻。", prayer: "主啊，祢是仍然說話的神，無論在旅程的起點，或困境的途中，祢的聲音都鮮活。赦免我們倚靠經驗、邏輯或過去的成功，而勝過祢那充滿生命的呼召。求祢顯明我們在習慣行事、而非順從祢之處，並以新鮮方式對我們當前的季節說話。教導我們的教會與事工，不預設進入過去模式，保持敏銳聖靈的帶領；並使教會領袖在神呼召改變方向時能辨明，或在艱難之處忠心忍耐。當祢說「去」，賜給我們前行的勇氣；當祢說「留」，賜給我們忍耐的力量。藉著聖靈引導我們，行在祢的榮耀與旨意中。阿們。"},
+            10: { phase: "差派", title: "拿細耳人運動", focus: "在國家危機之際，神賜給一個國家最偉大的禮物之一，就是能扭轉局勢的拿細耳青年男女。非常的時代需要非常的回應，而非常的回應需要願意突破沉默、放下同代標準、為世代開創新路的男女。他們是歷史的樞紐，定義所處時代的故事。聖經稱這些人為拿細耳人，他們立下三重誓約：不喝酒、不吃葡萄，象徵放下世俗享樂而追求更大的神喜樂；留長頭髮，作為向主分別為聖的公開標記，無法隱藏；不可接近死屍，象徵對屬靈死亡保持敏銳，遠離任何不道德、貪婪或苦毒的事物。歷史上，施洗約翰、參孫、撒母耳等人都是神在危機中興起的拿細耳人，他們以極端的忠心與禁食生活，扎根於對神的委身，將國家和教會帶入神聖榮耀的下一個階段。今日，台灣已有超過一萬五千名青年男女立下拿細耳人的誓約，我們相信神要興起十萬名拿細耳人，在這關鍵時刻成為世代的祝福。", prayer: "神啊,使我作拿細耳人!我禱告祢從台灣興起一個拿細耳人的世代!興起台灣的青年!神啊，賜給我們十萬名拿細耳人!"},
+            11: { phase: "差派", title: "青年志願軍", scripture: "詩篇110:3,新譯本", focus: "每一次神的運動，都呼召一個甘心說「是」的世代。詩篇 110 篇提醒我們，當神釋放能力時，願意的青年就會興起回應，不求回報，只為神的旨意獻上生命。整本聖經多次將關鍵轉折託付給年輕人：撒母耳年少聽見神聲音、大衛青年擊敗歌利亞、約西亞青年帶領國家改革、門徒年輕時撇下一切跟隨主。神尋找的不是有影響力的人，而是願意順服的世代。今日，神呼召青年志願者成為拿細耳人、代禱者、宣教士與改革者，披戴聖潔、與天上旨意對齊。父母與屬靈領袖要支持、禱告並門訓他們，引導這場跨世代運動，動員台灣史上最偉大的青年志願軍。", prayer: "主啊，求祢興起一個甘心獻上的世代，賜給台灣青年願意的心。求祢在他們身上成就勇氣、聖潔與委身，使他們全然獻上自己給祢的國度。願他們在祢大能的日子站立得穩，成為順服祢旨意的青年世代，成為祢手中翻轉這地的器皿，帶領台灣歸向祢。阿們。"},
+            12: { phase: "差派", title: "直到地極", scripture: "以賽亞書6:8", focus: "從起初，神的心意總超越國界，呼召亞伯拉罕使萬族得福，順服源於單純的「我在這裡」(hineni)的心態。如今，台灣教會被邀請進入同樣心態，即使面對張力與不明朗，宣教呼召仍然清晰。福音的傳播需要先在禱告中被塑造，代求預備人心、保守通道，使宣教的時間、空間與機會得以開放。台灣的志願者運動也需如此：工人被差遣前，心先被造做出意願；福音傳揚前，代禱者先爭取道路清楚。急迫感非因恐懼，而因機會增加，教會是否願意守住門，直到福音傳出去，正是當下的呼召。", prayer: "莊稼的主啊，我們不看自己，轉眼仰望祢所愛的列國。求祢喚醒台灣，使我們聽見尚未聽聞福音之民的呼聲，讓人心被對耶穌的愛與對失喪靈魂的愛抓緊與激勵。求祢在台灣興起願意的百姓，男人女人預備好說出「hineni」，毫無保留地獻上自己，當祢說話時願意回應，當祢差遣時願意前行。求祢讓福音的門持續敞開，賜下自由、通道與機會，並約束攔阻祢旨意的勢力。藉著禱告，預備我們既警醒又願意，為祢在列國中的榮耀而站立、代求與奉獻自己。阿們。"},
+            13: { phase: "差派", title: "君王的事", scripture: "但以理書2:22-23", focus: "但以理書第2章記載，在帝國危機中，君王震怒、命令不可知之事，百姓命運受威脅。但以理沒有恐慌或倚靠政治手段，而是與朋友轉向神，尋求洞見，使天上的旨意在地上顯明。類似地，以利沙也因神將君王暗謀顯明，保全以色列、挫敗敵計。這揭示真理：當神的僕人尋求祂時，祂樂意顯明隱密事，賜下先知性洞見，使禱告得著精準與權柄。代禱者不僅被動回應，而是提前爭取，使神旨意得勝。今日，當國家方向不明、領袖爭鬧，神邀請全台百姓求問「君王的事」，使禱告與天上諭令對齊，歷史因神的旨意而被塑造。", prayer: "天上的神啊，祢掌管列國、顯明深奧隱秘的事。求祢在這時刻賜給我們洞見與夢，使我們明白君王與領袖所策劃之事，裝備我們代求得著更大的啟示與理解。除去我們禱告中的恐懼與被動反應，使我們完全與祢的旨意和諭令對齊。我們也為領袖禱告，求祢將從祢而來的夢賜給他們，引導他們的心合乎天上的旨意。我們承認，唯有祢立王、廢王；教導我們帶著清晰、謙卑與信心來代求，信靠祢的旨意必在全地得勝。阿們。"},
+            14: { phase: "差派", title: "為領袖禱告以得著列國", scripture: "提摩太前書2:1-6", focus: "非常少數信徒固定為政府領袖代禱，而其中許多人不明白其重要性。保羅教導，為君王和在位者禱告，不只是求個人得救，而是因他們的權柄影響整個國家的人民和福音前行。領袖如守門人，其政策、戰爭或自由限制，都漣漪般影響萬民。禱告能對抗屬靈阻力，使福音在指定時刻到達未得之民。當政府逼迫或不公時，福音差遣受阻；代禱能扭轉國家軌跡，打開門戶，使耶穌的信息自由傳達。禱告的目標，不僅是好領袖，更是清理道路，使列國能在神所定的時刻遇見祂。", prayer: "天父啊，祢願萬人得救、明白真道。教導我們超越眼前所見來禱告，使我們明白領袖的決策如何塑造列國、影響福音前行。我們求祢介入政府與最高權柄，約束不義，使教會能自由生活、無攔阻地宣講福音，也為那些福音被延遲或抵擋的國家開路，使每一個族群都能在祢所定的時刻遇見耶穌。使用我們的禱告改變國家，成就祢的救贖旨意。阿們。"},
+            15: { phase: "爭戰", title: "同心合意禱告的力量", scripture: "馬太福音18:19-20", focus: "耶穌教導禱告中的合一，如交響樂般有力。合一不是聲音一致，而是不同聲音自願順服同一位指揮、朝同一目標前進，帶出超越個人的力量。祂應許，當子民同心合意時，天父會回應，甚至親自臨在。這需要謙卑、聆聽與降服，熱情與節制並行，但帶來非限制而是能力。21 天禁食期間，台灣信徒將心對齊同一目標，不同城市、不同聲音卻同向神，刻意培養的屬靈和諧，如同禱告交響樂，吸引神的同在，帶來果效與天上的回應。", prayer: "寫成一段禱告　含以上內容。"},
+            16: { phase: "爭戰", title: "守住陣線", scripture: "希伯來書10:23&哈巴谷書2:1", focus: "有些季節，信心的考驗不在於禱告回應的速度，而在於持守的忠心。禱告中的堅忍，是在情勢改變、回應遲延、迫切增加時，仍願意安靜持守、付上昂貴代價。聖經教導我們，堅守是主動抓住神所託之地、拒絕離開崗位，如哈巴谷的守望者敏銳留意、警醒專注；以利亞撒在非利士人攻勢下手黏刀柄堅持到底，神就施行拯救。信心的堅守不是靠力量，而是持續站立、拒絕抽離，為神介入預備場地，使「突然」的拯救在長期禱告之後成就。", prayer: "信實的神，祢不打盹也不睡覺，求祢在這延長而緊張的時刻中剛強我們，使我們在禱告中持續參與，不因疲乏或退縮而放棄，反而藉著聖靈得著新鮮的盼望。主啊，我們今日再次委身進入祢所賜予的代求之位，求祢提醒我們祢對台灣與我們生命的應許，使我們的思想與禱告持續對齊這些信實的應許。當我們為台灣的防衛而站立時，求祢使我們警醒、穩固，忠心守住陣地，並按祢的旨意持續前行。阿們。"},
+            17: { phase: "爭戰", title: "原住民族群與福音", scripture: "以賽亞書24:15&瑪拉基書1:11", focus: "認識原住民族的歷史，就是認識台灣宣教與復興的歷史。1627 年，第一位駐島宣教士喬治·甘治士抵達，宣告福爾摩沙的原住民將成為全亞洲最順服福音的群體。自此，福音藉原住民族不斷擴展，十七至十九世紀神的國度在此扎根，直至五十年前聖靈澆灌仍臨到他們。今日，超過八成原住民認同基督信仰，他們是台灣信仰的根源。我們相信未來十八個月，台灣各原住民族群與部落將迎來復興與突破，他們的復興即是全國的突破。當神臨到時，祂必臨到這地的根源人民。", prayer: "全能的神啊，求祢再次帶著復興造訪台灣的原住民族！打開古井，使祢的大能在他們中間大大運行。父啊，求祢興起原住民的領袖，包括使徒、先知、傳福音的、牧師與教師，使他們在教會中帶領國家進入復興。求祢突破一切偏離對耶穌專一的錯誤意識形態、假宗教與錯誤心思意念，膏抹他們，使他們成為這地的光與鹽。主啊，求祢在悔改與饒恕中醫治原住民族群之間的分裂、冒犯與不信任，使他們合而為一。甦醒吧，原住民的代禱者、歌手與使者，帶著祢的榮耀再次在台灣宣揚祢的名！阿們。"},
+            18: { phase: "爭戰", title: "集體悔改與禱告的力量", scripture: "歷代志下7:14", focus: "神的應許不只是給個人，而是針對整個國家。國家的拯救與集體的禱告、悔改息息相關，而責任從祂的子民開始。合一與謙卑先於醫治與恢復，禱告與悔改是國家回轉的關鍵。聖經與教會歷史顯示，每一次神的偉大運動前，都伴隨深刻的悔改；當百姓承擔自己的罪責，神必為土地負責。即使在最黑暗、危急的時刻，神仍尋找願意代求的子民，為國家站立，開啟救恩與恢復的道路。", prayer: "天父啊，我們在祢面前謙卑自己，承認我們的罪，轉離一切惡行。求祢以祢的光照亮我們，使生命真實轉化，帶來悔改的果效。為教會的謙卑與悔改禱告，也為屬靈、道德和國家的醫治祈求。求祢垂聽我們的呼求，赦免我們的過犯，醫治我們的地，使悔改成為台灣復興的道路。阿們。"},
+            19: { phase: "爭戰", title: "聚集的日子", scripture: "約珥書2:15-16", focus: "當一個國家陷入絕望、看似無法補救之時，神仍有祂的神聖處方：吹響號角，召聚聖民，宣告禁食。歷史與約珥書第二章提醒我們，國家級的危機不靠政策或軍事，而是需要百姓集體的悔改與禱告，無論年長或年幼、領袖或平民，皆被召聚。神應許說：「耶和華就為自己的地發熱心，憐恤他的百姓。」嚴肅會的聚集能釋放天上的憐憫。正因如此，我們將 2027 年 3 月 27 日定為台灣全國嚴肅會日，在高雄國家體育場，以禁食、謙卑、悔改與向神呼求復興為標記，期待在一日之間，激發一國的轉化。", prayer: "主啊，我們聽見祢呼召百姓聚集的聲音。求祢在我們面前分別我們，使我們成為聖潔的預備，迎向 2027 年 3 月 27 日。求祢憐憫我們的土地，當我們以禁食、悔改與禱告尋求祢時，再次觸動祢的心。賜力量給牧者與領袖，使他們勇敢呼召百姓同心合意地禱告與禁食。主啊，求祢以憐憫、復興與恢復回應，合一祢的教會，將祢的靈澆灌在台灣，帶來翻轉與更新。阿們。"},
+            20: { phase: "爭戰", title: "回轉歸向神", scripture: "約珥書2:12-13", focus: "在國家危機時，聖經總呼召百姓悔改歸向神。約珥的招聚提醒我們，當仇敵藉衝突與戰爭試圖攔阻神的旨意，代求應同時包含抵擋與悔改。我們禱告求神挫敗狂傲君王的計謀，也潔淨祂的百姓，釋放憐憫。這悔改季節以禁食、禱告與全心歸向主為標記，將在 2027 年 3 月 27 日全國嚴肅會達到高峰。我們從現在起自卑悔改，承認個人與國家的罪，信靠神憐憫的屬性，祈求醫治與拯救，期待祂以憐憫勝過審判，為台灣帶來轉機。", prayer: "憐憫的神啊，我們全心回轉向祢，坦誠承認自己與國家的罪，承認對偶像崇拜、性不道德及無辜流血的過犯。求祢鑒察我們的心，潔淨我們，帶領我們真誠悔改，使生命完全對齊祢的旨意。當我們為台灣呼求時，求祢約束審判，轉意施憐憫，在祢身後留下餘福。我們不將盼望寄於自己，而是完全信靠祢極大的憐憫與不變的慈愛。阿們。"},
+            21: { phase: "爭戰", title: "為應許而戰", scripture: "提摩太前書1:18-19", focus: "保羅勉勵提摩太，提醒他要精準記念並抓住對他生命的預言，把神的應許作為屬靈兵器來打仗。禱告不是被動或妥協，而是在神所應許的名義下，對抗一切違背祂旨意的勢力。環境、時間與敵對力量會試圖削弱應許，但信心堅定、不鬆手的禱告能爭取神的應許得勝。這種禱告需要無虧的良心、剛強的心，站立在神話語上，刻意宣告祂旨意必然成就。每一次如此獻上的禱告，都是對絕望與不信的屬靈抗爭。神正興起一群不放手的百姓，因為祂的應許確實可靠。", prayer: "主啊，祢的話語是真實的，也是我們的保障。求祢顯明那些我們曾鬆手、允許溜走的應許，並更新我們爭取祢所說之話的決心。教導我們以信心與堅忍為祢所應許的爭戰，使教會能恢復不動搖的信心，在壓力之下仍緊抓祢的應許不屈服。當抵擋與攔阻出現時，剛強我們站立，抵擋一切違背祢旨意的勢力，宣告祢對這地的應許，直到完全成就。阿們。"},
+    };
+        // 為了空間，此處僅展示關鍵節點，實際運行時請將您提供的 1-21 數據完整複製進 dailyData 變數中。
+
+        let currentDay = 1;
+        let db = JSON.parse(localStorage.getItem('prayer_db_2026')) || {};
+
+        // 初始化生成按鈕
+        const selector = document.getElementById('daySelector');
+        for (let i = 1; i <= 21; i++) {
+            const btn = document.createElement('button');
+            btn.className = `flex-shrink-0 w-14 h-14 rounded-xl border-2 flex items-center justify-center font-bold snap-start transition ${db[i] ? 'bg-blue-50 border-blue-400 text-blue-600' : 'bg-white text-gray-400'}`;
+            btn.id = `btn-${i}`;
+            btn.innerText = i;
+            btn.onclick = () => loadDay(i, btn);
+            selector.appendChild(btn);
+        }
+
+        function loadDay(day, btn) {
+            currentDay = day;
+            document.querySelectorAll('#daySelector button').forEach(b => b.classList.remove('active', 'ring-4', 'ring-yellow-300'));
+            if(btn) btn.classList.add('active', 'ring-4', 'ring-yellow-300');
+            
+            const data = dailyData[day] || { phase: "進行中", title: "即將開啟", scripture: "", focus: "請持續守望", prayer: "主啊，我們仰望祢。" };
+            document.getElementById('currentDayLabel').innerText = day;
+            document.getElementById('contentPhase').innerText = data.phase;
+            document.getElementById('contentTitle').innerText = data.title;
+            document.getElementById('contentScripture').innerText = `「${data.scripture}」`;
+            document.getElementById('contentFocus').innerText = data.focus;
+            document.getElementById('contentPrayer').innerText = data.prayer;
+
+            // 載入該天暫存
+            const saved = db[day] || { fast: false, pray: false, note: "" };
+            document.getElementById('checkFast').checked = saved.fast;
+            document.getElementById('checkPray').checked = saved.pray;
+            document.getElementById('dailyNote').value = saved.note;
+            updateUIProgress();
+        }
+
+        function saveToday() {
+            db[currentDay] = {
+                fast: document.getElementById('checkFast').checked,
+                pray: document.getElementById('checkPray').checked,
+                note: document.getElementById('dailyNote').value,
+                timestamp: new Date().toLocaleString()
+            };
+            localStorage.setItem('prayer_db_2026', JSON.stringify(db));
+            document.getElementById(`btn-${currentDay}`).classList.add('bg-blue-50', 'border-blue-400', 'text-blue-600');
+            updateUIProgress();
+            alert("進度已儲存！");
+        }
+
+        function updateUIProgress() {
+            let count = Object.keys(db).length;
+            let percent = Math.round((count / 21) * 100);
+            document.getElementById('progressCircle').style.strokeDashoffset = 314 - (percent / 100 * 314);
+            document.getElementById('progressText').innerText = percent + "%";
+            document.getElementById('completedDays').innerText = count;
+        }
+
+        function generatePDF() {
+            const list = document.getElementById('print-list');
+            list.innerHTML = "";
+            for (let i = 1; i <= 21; i++) {
+                if (db[i]) {
+                    const item = document.createElement('div');
+                    item.style = "margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:15px;";
+                    item.innerHTML = `
+                        <h3 style="color:#1e3a8a;">第 ${i} 天：${dailyData[i]?.title || ""}</h3>
+                        <p style="font-size:12px; color:#666;">禁食：${db[i].fast ? '✓' : '×'} | 禱告：${db[i].pray ? '✓' : '×'} | 時間：${db[i].timestamp}</p>
+                        <div style="margin-top:5px; background:#f9f9f9; padding:10px; border-radius:5px; white-space:pre-wrap;">${db[i].note}</div>
+                    `;
+                    list.appendChild(item);
+                }
+            }
+            window.print();
+        }
+
+        function signVow() {
+            let name = prompt("請輸入您的姓名，立約成為拿細耳青年志願軍：");
+            if(name) alert(name + "，願神紀念你的誓言。你的生命將分別為聖！");
+        }
+
+        loadDay(1, document.getElementById('btn-1'));
+    </script>
+</body>
+</html>
