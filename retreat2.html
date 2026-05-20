@@ -254,7 +254,7 @@ footer{
 <li><strong>活動地點：</strong>加利利祈禱院（希望會館）</li>
 <li><strong>活動主題：</strong>學像耶穌．突破</li>
 </ul>
-<div style="text-align:right;">
+<div style="text-align:right; margin-top:15px;">
     <iframe
         width="560"
         height="315"
@@ -332,13 +332,7 @@ Alpha啟發課程
 
 </table>
 </div>
-<div style="text-align:center;">
-     <img src="images/5.jpg" width="250">
-    <img src="images/250227_2.jpg" width="200">
-    <img src="images/10.jpg" width="300">
-    <img src="images/boad.jpg" width="230">
-    
-</div>
+
 <div class="card">
 <h2>線上報名</h2>
 
@@ -377,6 +371,13 @@ onsubmit="handleFormSubmit()">
 <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 </div>
 
+<div style="text-align:center;"> 
+    <img src="images/5.jpg" width="250"> 
+    <img src="images/250227_2.jpg" width="200"> 
+    <img src="images/10.jpg" width="300"> 
+    <img src="images/boad.jpg" width="230"> 
+</div>
+
 <div class="card">
 <h2>即時報名名單</h2>
 
@@ -403,19 +404,33 @@ onsubmit="handleFormSubmit()">
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbzWd1QQLioYW4poCSRcWY25j1NU5OPEVrEKne71CGlqqdZ1SYgS8Dttw_pBgYbAwMS6sg/exec";
 
-// 彈性解析欄位名稱，避免因為空白或標點符號不一致導致讀不到資料
+// 修正後的精準解析函式：優先執行 100% 完全相同比對，避免被其他欄位的類似中文字干擾
 function findValue(item, keywords) {
     const keys = Object.keys(item);
-    // 先找完全符合的
-    for (let key of keys) {
-        if (keywords.includes(key)) return item[key];
-    }
-    // 找不到就模糊比對（只要欄位名稱包含關鍵字就抓）
-    for (let key of keys) {
-        for (let kw of keywords) {
-            if (key.includes(kw)) return item[key];
+
+    // 第一階段：完全一模一樣的比對（最安全）
+    for (const key of keys) {
+        const trimmedKey = key.trim();
+        for (const kw of keywords) {
+            if (trimmedKey === kw.trim()) {
+                return item[key];
+            }
         }
     }
+
+    // 第二階段：如果精準比對找不到，才執行嚴格限制的包含比對
+    for (const key of keys) {
+        for (const kw of keywords) {
+            // 特殊保護：如果關鍵字是"房"，必須排除家眷欄位的干擾；如果是短詞，確保欄位長度合理
+            if (kw === "幾人房" || kw === "房型") {
+                if (key.includes("房")) return item[key];
+            }
+            if (key.includes(kw) && kw.length > 2) {
+                return item[key];
+            }
+        }
+    }
+
     return "";
 }
 
@@ -435,21 +450,23 @@ async function loadData() {
         data.forEach(item => {
             const row = body.insertRow();
 
-            // 透過模糊與精準雙重比對，解決欄位名稱不吻合的問題
+            // 帶入完整且正確的 Google 試算表原始欄位名稱進行比對
             const name = findValue(item, ["姓名"]);
             const transport = findValue(item, ["是否需要接送?", "是否需要接送？", "接送"]);
             const car = findValue(item, ["若您自行開車前往，麻煩填寫此問題", "開車狀況", "開車"]);
             const seats = findValue(item, ["如能接送，請問有幾個空位?", "如能接送，請問有幾個空位？", "空位"]);
-            const family = findValue(item, ["填寫會參加之家眷名字? (不包含自己)", "填寫會習慣之家眷名字? (不包含自己)", "填寫會參加之家眷名字？", "家眷"]);
-            const room = findValue(item, ["需要幾人房?", "需要幾人房？", "房型"]);
+            
+            // 修正字眼：修正原本程式碼中的「習慣」為正確的「參加」
+            const family = findValue(item, ["填寫會參加之家眷名字? (不包含自己)", "填寫會參加之家眷名字？", "家眷名字", "家眷"]);
+            const room = findValue(item, ["需要幾人房?", "需要幾人房？", "幾人房", "房型"]);
 
             row.innerHTML = `
-                <td><strong>${name}</strong></td>
-                <td>${transport}</td>
-                <td>${car}</td>
-                <td>${seats !== "" ? seats : "-"}</td>
+                <td><strong>${name || "-"}</strong></td>
+                <td>${transport || "-"}</td>
+                <td>${car || "-"}</td>
+                <td>${seats !== "" && seats !== undefined ? seats : "-"}</td>
                 <td>${family || "無"}</td>
-                <td>${room}</td>
+                <td><span style="color: #e67e22; font-weight: bold;">${room || "-"}</span></td>
             `;
         });
 
@@ -460,18 +477,18 @@ async function loadData() {
     }
 }
 
-// 當使用者點擊送出時触发
+// 當使用者點擊送出時觸發
 function handleFormSubmit() {
     const btn = document.getElementById("submitBtn");
     btn.disabled = true;
     btn.innerText = "資料同步中...";
     
-    // Google 表單寫入試算表通常需要 1~2 秒延遲，3 秒後重新抓取最精準
+    // 預留 3 秒讓 Google 表單將資料寫入試算表，隨後前端自動重載
     setTimeout(() => {
         loadData();
         btn.disabled = false;
         btn.innerText = "送出報名";
-        document.getElementById("registrationForm").reset(); // 清空表單
+        document.getElementById("registrationForm").reset(); 
     }, 3000);
 }
 
@@ -484,4 +501,3 @@ setInterval(loadData, 15000);
 
 </body>
 </html>
-
