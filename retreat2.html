@@ -242,7 +242,42 @@ document.getElementById("registrationForm").addEventListener("submit", function(
 loadData();
 // 每 15 秒自動重新載入一次（避免頻率太高被 Google 限制流量）
 setInterval(loadData, 15000);
+
+const API_URL = "https://script.google.com/macros/s/AKfycbzWd1QQLioYW4poCSRcWY25j1NU5OPEVrEKne71CGlqqdZ1SYgS8Dttw_pBgYbAwMS6sg/exec"; 
+
+async function loadData() {
+    try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+
+        const body = document.getElementById("dataBody");
+        body.innerHTML = "";
+
+        data.forEach(item => {
+            const row = body.insertRow();
+            
+            // ⚠️ 這裡的引號內，必須填寫與您 Google 試算表「第一列欄位名稱」一模一樣的字！
+            // 哪怕有空格或問號都要完全相同，例如 item["時間戳記"] 或 item["姓名"]
+            row.innerHTML = `
+                <td>${item["姓名"] || ""}</td>
+                <td>${item["是否需要接送?"] || item["接送"] || ""}</td>
+                <td>${item["若您自行開車前往，麻煩填寫此問題"] || item["開車"] || ""}</td>
+                <td>${item["如能接送，請問有幾個空位?"] || item["空位"] || ""}</td>
+                <td>${item["填寫會習慣之家眷名字? (不包含自己)"] || item["家眷"] || ""}</td>
+                <td>${item["需要幾人房?"] || item["房型"] || ""}</td>
+            `;
+        });
+
+    } catch (e) {
+        console.error("載入失敗", e);
+    }
+}
+
+// 網頁開啟時載入
+loadData();
+
 </script>
+
 
 </body>
 </html>
