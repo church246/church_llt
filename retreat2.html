@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2026信義會靈糧堂牧養同工退修會</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght=300;400;500;700&display=swap" rel="stylesheet">
 
 <style>
 body{
@@ -43,6 +43,7 @@ body{
 h2{
     border-left:5px solid #3498db;
     padding-left:10px;
+    margin-bottom: 15px;
 }
 
 /* 輪播 */
@@ -60,22 +61,27 @@ input,select,textarea{
     margin-top:8px;
     border-radius:6px;
     border:1px solid #ccc;
+    box-sizing: border-box;
 }
 
 button{
     margin-top:10px;
-    padding:12px;
+    padding:12px 24px;
     background:#198754;
     color:white;
     border:none;
     border-radius:8px;
     cursor:pointer;
+    font-size: 16px;
 }
+
+button:hover { background:#157347; }
 
 /* 表格 */
 table{
     width:100%;
     border-collapse:collapse;
+    margin-top: 10px;
 }
 
 th{
@@ -94,6 +100,11 @@ tr:nth-child(even){
     background:#f8f9fa;
 }
 
+.loading-text {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
 </style>
 </head>
 
@@ -106,34 +117,28 @@ tr:nth-child(even){
 
 <div class="container">
 
-<!-- 輪播 -->
 <div class="card">
 <h2>活動照片</h2>
 <div class="carousel">
-    <img src="images/20250227_1.jpg">
+    <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1600">
 </div>
 </div>
 
-<!-- 邀請信 -->
 <div class="card">
 <h2>邀請信</h2>
 <p>
 親愛的牧養同工、弟兄姊妹：<br><br>
-
-本次退修會以「學像耶穌．突破」為主題，
-透過福音與工人、團隊、工具三大方向，
-幫助我們重新得力，在主裡更新與合一。
+本次退修會以「學像耶穌．突破」為主題，透過福音與工人、團隊、工具三大方向，幫助我們重新得力，在主裡更新與合一。
 </p>
 </div>
 
-<!-- 報名 -->
 <div class="card">
 <h2>線上報名</h2>
 
 <form action="https://docs.google.com/forms/d/e/1FAIpQLScGNLswZXO0N3GXvqfG6Z_HcbWiDma3FOu1vHS2oUStDtPazw/formResponse"
 method="POST"
 target="hidden_iframe"
-onsubmit="submitted=true;">
+id="registrationForm">
 
 <input name="entry.1993706249" placeholder="姓名" required>
 
@@ -150,9 +155,9 @@ onsubmit="submitted=true;">
 
 <input name="entry.1915361258" placeholder="可載幾人（沒有填0）">
 
-<textarea name="entry.1783599725" placeholder="家眷名字"></textarea>
+<textarea name="entry.463977651" placeholder="家眷名字"></textarea>
 
-<select name="entry.463977651">
+<select name="entry.1783599725">
     <option value="4人房">4人房</option>
     <option value="3人房">3人房</option>
     <option value="2人房">2人房</option>
@@ -161,10 +166,9 @@ onsubmit="submitted=true;">
 <button type="submit">送出報名</button>
 </form>
 
-<iframe name="hidden_iframe" style="display:none;"></iframe>
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 </div>
 
-<!-- Google Sheets 名單 -->
 <div class="card">
 <h2>即時報名名單</h2>
 
@@ -179,16 +183,21 @@ onsubmit="submitted=true;">
 <th>房型</th>
 </tr>
 </thead>
-<tbody id="dataBody"></tbody>
+<tbody id="dataBody">
+    <tr><td colspan="6" class="loading-text">名單載入中...</td></tr>
+</tbody>
 </table>
 </div>
 
 </div>
 
 <script>
-const API_URL = "YOUR_SCRIPT_URL"; // 🔥換成你的 Apps Script
+// 🔥 請將下方網址替換為您在步驟一「部署」後獲得的網頁應用程式 URL
+const API_URL = "填入剛才複製的網頁應用程式URL"; 
 
 async function loadData(){
+    if(API_URL === "填入剛才複製的網頁應用程式URL") return;
+    
     try{
         const res = await fetch(API_URL);
         const data = await res.json();
@@ -196,26 +205,45 @@ async function loadData(){
         const body = document.getElementById("dataBody");
         body.innerHTML = "";
 
+        if(data.length === 0){
+            body.innerHTML = `<tr><td colspan="6" class="loading-text">目前尚無人報名</td></tr>`;
+            return;
+        }
+
         data.forEach(item=>{
             const row = body.insertRow();
             row.innerHTML = `
                 <td>${item.name || ""}</td>
                 <td>${item.transport || ""}</td>
                 <td>${item.car || ""}</td>
-                <td>${item.seat || ""}</td>
-                <td>${item.family || ""}</td>
+                <td>${item.seat !== undefined ? item.seat : ""}</td>
+                <td>${item.family || "無"}</td>
                 <td>${item.room || ""}</td>
             `;
         });
 
     }catch(e){
-        console.log("載入失敗",e);
+        console.error("載入失敗", e);
+        document.getElementById("dataBody").innerHTML = `<tr><td colspan="6" class="loading-text" style="color:red;">資料載入失敗，請檢查 API 設定</td></tr>`;
     }
 }
 
+// 表單送出提示與畫面重置
+document.getElementById("registrationForm").addEventListener("submit", function(){
+    alert("報名資料已送出！名單更新約需數秒，請稍候。");
+    const form = this;
+    setTimeout(() => {
+        form.reset();
+        loadData(); // 嘗試即時重新整理
+    }, 500);
+});
+
+// 初始載入
 loadData();
-setInterval(loadData,5000);
+// 每 15 秒自動重新載入一次（避免頻率太高被 Google 限制流量）
+setInterval(loadData, 15000);
 </script>
 
 </body>
 </html>
+
