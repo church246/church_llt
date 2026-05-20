@@ -8,45 +8,84 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght=300;400;500;700&display=swap" rel="stylesheet">
 
 <style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 body{
     font-family:'Noto Sans TC',sans-serif;
-    margin:0;
-    background:#f5f7fa;
+    line-height:1.8;
     color:#333;
+    background:#f5f7fa;
 }
 
+/* Hero區塊 */
 .hero{
-    background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)),
-    url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600");
+    background:
+    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+    url("../images/5.jpg");
     background-size:cover;
+    background-position:center;
     color:white;
     text-align:center;
-    padding:90px 20px;
+    padding:120px 20px;
 }
 
-.hero h1{font-size:2.8rem;}
+.hero h1{
+    font-size:3rem;
+    margin-bottom:15px;
+}
 
+.hero p{
+    font-size:1.2rem;
+}
+
+/* 內容區 */
 .container{
-    max-width:1100px;
+    max-width:1200px;
     margin:auto;
-    padding:30px;
+    padding:40px 20px;
 }
 
 .card{
     background:white;
-    padding:25px;
-    margin-bottom:20px;
-    border-radius:12px;
-    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    padding:35px;
+    border-radius:15px;
+    margin-bottom:25px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
 }
 
+/* 標題 */
 h2{
-    border-left:5px solid #3498db;
+    color:#1b4f72;
+    margin-bottom:15px;
+    border-left:6px solid #3498db;
     padding-left:10px;
-    margin-bottom: 15px;
 }
 
-/* 輪播 */
+/* 精華特色 */
+.highlight{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.highlight-item{
+    background:#f8fbff;
+    padding:25px;
+    border-radius:12px;
+    text-align:center;
+}
+
+.highlight-item h3{
+    color:#0b5ed7;
+    margin-bottom:10px;
+}
+
+/* 輪播圖片 */
 .carousel img{
     width:100%;
     height:350px;
@@ -54,82 +93,235 @@ h2{
     border-radius:10px;
 }
 
-/* 表單 */
-input,select,textarea{
-    width:100%;
-    padding:10px;
-    margin-top:8px;
-    border-radius:6px;
-    border:1px solid #ccc;
-    box-sizing: border-box;
-}
-
-button{
-    margin-top:10px;
-    padding:12px 24px;
-    background:#198754;
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-size: 16px;
-}
-
-button:hover { background:#157347; }
-
 /* 表格 */
 table{
     width:100%;
     border-collapse:collapse;
-    margin-top: 10px;
+    margin-top:10px;
 }
 
-th{
+table th{
     background:#0d6efd;
     color:white;
-    padding:10px;
 }
 
-td{
+table th,
+table td{
     border:1px solid #ddd;
-    padding:8px;
+    padding:12px;
     text-align:center;
 }
 
-tr:nth-child(even){
+table tr:nth-child(even){
     background:#f8f9fa;
 }
 
-.loading-text {
-    text-align: center;
-    color: #666;
-    font-style: italic;
+/* 引言 */
+.quote{
+    background:#0d6efd;
+    color:white;
+    text-align:center;
+    padding:30px;
+    border-radius:15px;
+    font-size:1.3rem;
+    font-weight:bold;
 }
+
+/* 表單 */
+form{
+    display:grid;
+    gap:15px;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+button{
+    background:#198754;
+    color:white;
+    border:none;
+    padding:15px;
+    border-radius:8px;
+    font-size:18px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    background:#157347;
+}
+
+/* 報名結果 */
+.result{
+    margin-top:25px;
+    background:#fffbe6;
+    border-left:6px solid #ffc107;
+    padding:20px;
+    display:none;
+}
+
+/* 載入文字 */
+.loading-text{
+    text-align:center;
+    color:#666;
+    font-style:italic;
+}
+
+/* 頁尾 */
+footer{
+    text-align:center;
+    background:#1b2631;
+    color:white;
+    padding:25px;
+    margin-top:40px;
+}
+
+/* 手機版 */
+@media (max-width:768px){
+    .hero{
+        padding:80px 20px;
+    }
+
+    .hero h1{
+        font-size:2rem;
+    }
+
+    .card{
+        padding:25px;
+    }
+
+    table{
+        font-size:14px;
+    }
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="hero">
-    <h1>2026 信義會靈糧堂退修會</h1>
+<header class="hero">
+    <h1>2026 信義會靈糧堂牧養同工退修會</h1>
     <p>學像耶穌．突破</p>
-</div>
+</header>
 
 <div class="container">
 
 <div class="card">
-<h2>活動照片</h2>
-<div class="carousel">
-    <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1600">
+<h2>邀請信</h2>
+
+<p>
+親愛的牧養同工、弟兄姊妹，主內平安：
+</p>
+<br>
+<p>
+事奉的路上，我們與主同行，也與彼此同行。感謝大家長久以來在各自崗位上的忠心擺上。為了讓每位服事者能暫時放下忙碌，重新回到神面前得著餵養，並在主裡建立更深的情誼，我們特別規劃了今年的牧養同工退修會。
+</p>
+<br>
+<p>
+本次退修會以「學像耶穌．突破」為主題，圍繞「福音與工人」、「福音與團隊」、「福音與工具」三大核心概念，透過敬拜、靈修、實踐課程與小組討論，一同探索如何在日常生活中落實門徒訓練、打破宗派與山頭主義，活出彼此相愛的見證，並善用科技與創新工具（如 Alpha 啟發課程與 AI 科技），擴展福音的影響力。
+</p>
+<br>
+<p>
+當工人（精兵）、團隊（合一）與工具（創新）三者結合，我們將為這個世代贏得更多靈魂。除了心靈更新與學習之外，也安排趣味競賽、精心漫步、文化體驗及培靈禱告夜，讓大家在加利利祈禱院優美的環境中放鬆身心、深化連結。
+</p>
+<br>
+<p>
+誠摯邀請您與家人一同參與，讓我們再次被神的愛點燃，重新得力，迎向新的突破！
+</p>
+</div>
+
+<div class="quote">
+「你們該效法我，像我效法基督一樣。」
+<br>
+哥林多前書 11:1
+</div>
+
+<br>
+
+<div class="card">
+<h2>活動資訊</h2>
+
+<ul>
+<li><strong>活動日期：</strong>2026年7月10日（五）晚上7:00～7月11日（六）晚上5:00</li>
+<li><strong>報到時間：</strong>7月10日晚上19:00</li>
+<li><strong>活動地點：</strong>加利利祈禱院（希望會館）</li>
+<li><strong>活動主題：</strong>學像耶穌．突破</li>
+</ul>
+
+</div>
+
+<div class="card">
+<h2>活動亮點</h2>
+
+<div class="highlight">
+
+<div class="highlight-item">
+<h3>福音與工人</h3>
+落實一對一門徒訓練<br>
+培育屬靈生命
+</div>
+
+<div class="highlight-item">
+<h3>福音與團隊</h3>
+跨界連結<br>
+彼此相愛與合一
+</div>
+
+<div class="highlight-item">
+<h3>福音與工具</h3>
+AI科技應用<br>
+Alpha啟發課程
+</div>
+
+<div class="highlight-item">
+<h3>身心靈更新</h3>
+晨禱靈修<br>
+培靈禱告夜
+</div>
+
 </div>
 </div>
 
 <div class="card">
-<h2>邀請信</h2>
-<p>
-親愛的牧養同工、弟兄姊妹：<br><br>
-本次退修會以「學像耶穌．突破」為主題，透過福音與工人、團隊、工具三大方向，幫助我們重新得力，在主裡更新與合一。
-</p>
+<h2>費用說明</h2>
+
+<table>
+<tr>
+<th>參加方式</th>
+<th>對象</th>
+<th>費用</th>
+</tr>
+
+<tr>
+<td rowspan="3">過夜參加</td>
+<td>成人／國中以上</td>
+<td>500元</td>
+</tr>
+
+<tr>
+<td>國小兒童</td>
+<td>300元</td>
+</tr>
+
+<tr>
+<td>國小以下</td>
+<td>免費</td>
+</tr>
+
+<tr>
+<td>不過夜</td>
+<td>每人(成人／國中以上)</td>
+<td>300元(小六以下免費)</td>
+</tr>
+
+</table>
 </div>
 
 <div class="card">
@@ -138,7 +330,8 @@ tr:nth-child(even){
 <form action="https://docs.google.com/forms/d/e/1FAIpQLScGNLswZXO0N3GXvqfG6Z_HcbWiDma3FOu1vHS2oUStDtPazw/formResponse"
 method="POST"
 target="hidden_iframe"
-id="registrationForm">
+id="registrationForm"
+onsubmit="handleFormSubmit()">
 
 <input name="entry.1993706249" placeholder="姓名" required>
 
@@ -163,7 +356,7 @@ id="registrationForm">
     <option value="2人房">2人房</option>
 </select>
 
-<button type="submit">送出報名</button>
+<button type="submit" id="submitBtn">送出報名</button>
 </form>
 
 <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
@@ -191,59 +384,25 @@ id="registrationForm">
 
 </div>
 
+
 <script>
-// 🔥 請將下方網址替換為您在步驟一「部署」後獲得的網頁應用程式 URL
-const API_URL = "填入剛才複製的網頁應用程式URL"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbzWd1QQLioYW4poCSRcWY25j1NU5OPEVrEKne71CGlqqdZ1SYgS8Dttw_pBgYbAwMS6sg/exec";
 
-async function loadData(){
-    if(API_URL === "填入剛才複製的網頁應用程式URL") return;
-    
-    try{
-        const res = await fetch(API_URL);
-        const data = await res.json();
-
-        const body = document.getElementById("dataBody");
-        body.innerHTML = "";
-
-        if(data.length === 0){
-            body.innerHTML = `<tr><td colspan="6" class="loading-text">目前尚無人報名</td></tr>`;
-            return;
-        }
-
-        data.forEach(item=>{
-            const row = body.insertRow();
-            row.innerHTML = `
-                <td>${item.name || ""}</td>
-                <td>${item.transport || ""}</td>
-                <td>${item.car || ""}</td>
-                <td>${item.seat !== undefined ? item.seat : ""}</td>
-                <td>${item.family || "無"}</td>
-                <td>${item.room || ""}</td>
-            `;
-        });
-
-    }catch(e){
-        console.error("載入失敗", e);
-        document.getElementById("dataBody").innerHTML = `<tr><td colspan="6" class="loading-text" style="color:red;">資料載入失敗，請檢查 API 設定</td></tr>`;
+// 彈性解析欄位名稱，避免因為空白或標點符號不一致導致讀不到資料
+function findValue(item, keywords) {
+    const keys = Object.keys(item);
+    // 先找完全符合的
+    for (let key of keys) {
+        if (keywords.includes(key)) return item[key];
     }
+    // 找不到就模糊比對（只要欄位名稱包含關鍵字就抓）
+    for (let key of keys) {
+        for (let kw of keywords) {
+            if (key.includes(kw)) return item[key];
+        }
+    }
+    return "";
 }
-
-// 表單送出提示與畫面重置
-document.getElementById("registrationForm").addEventListener("submit", function(){
-    alert("報名資料已送出！名單更新約需數秒，請稍候。");
-    const form = this;
-    setTimeout(() => {
-        form.reset();
-        loadData(); // 嘗試即時重新整理
-    }, 500);
-});
-
-// 初始載入
-loadData();
-// 每 15 秒自動重新載入一次（避免頻率太高被 Google 限制流量）
-setInterval(loadData, 15000);
-
-const API_URL = "https://script.google.com/macros/s/AKfycbzWd1QQLioYW4poCSRcWY25j1NU5OPEVrEKne71CGlqqdZ1SYgS8Dttw_pBgYbAwMS6sg/exec"; 
 
 async function loadData() {
     try {
@@ -253,31 +412,60 @@ async function loadData() {
         const body = document.getElementById("dataBody");
         body.innerHTML = "";
 
+        if (!data || data.length === 0 || data.error) {
+            body.innerHTML = `<tr><td colspan="6" class="loading-text">目前尚無報名資料</td></tr>`;
+            return;
+        }
+
         data.forEach(item => {
             const row = body.insertRow();
-            
-            // ⚠️ 這裡的引號內，必須填寫與您 Google 試算表「第一列欄位名稱」一模一樣的字！
-            // 哪怕有空格或問號都要完全相同，例如 item["時間戳記"] 或 item["姓名"]
+
+            // 透過模糊與精準雙重比對，解決欄位名稱不吻合的問題
+            const name = findValue(item, ["姓名"]);
+            const transport = findValue(item, ["是否需要接送?", "是否需要接送？", "接送"]);
+            const car = findValue(item, ["若您自行開車前往，麻煩填寫此問題", "開車狀況", "開車"]);
+            const seats = findValue(item, ["如能接送，請問有幾個空位?", "如能接送，請問有幾個空位？", "空位"]);
+            const family = findValue(item, ["填寫會參加之家眷名字? (不包含自己)", "填寫會習慣之家眷名字? (不包含自己)", "填寫會參加之家眷名字？", "家眷"]);
+            const room = findValue(item, ["需要幾人房?", "需要幾人房？", "房型"]);
+
             row.innerHTML = `
-                <td>${item["姓名"] || ""}</td>
-                <td>${item["是否需要接送?"] || item["接送"] || ""}</td>
-                <td>${item["若您自行開車前往，麻煩填寫此問題"] || item["開車"] || ""}</td>
-                <td>${item["如能接送，請問有幾個空位?"] || item["空位"] || ""}</td>
-                <td>${item["填寫會習慣之家眷名字? (不包含自己)"] || item["家眷"] || ""}</td>
-                <td>${item["需要幾人房?"] || item["房型"] || ""}</td>
+                <td><strong>${name}</strong></td>
+                <td>${transport}</td>
+                <td>${car}</td>
+                <td>${seats !== "" ? seats : "-"}</td>
+                <td>${family || "無"}</td>
+                <td>${room}</td>
             `;
         });
 
     } catch (e) {
         console.error("載入失敗", e);
+        document.getElementById("dataBody").innerHTML =
+            `<tr><td colspan="6" style="color: red; text-align: center;">資料載入失敗，請確認 Apps Script 已部署為「所有人」權限。</td></tr>`;
     }
 }
 
-// 網頁開啟時載入
+// 當使用者點擊送出時触发
+function handleFormSubmit() {
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.innerText = "資料同步中...";
+    
+    // Google 表單寫入試算表通常需要 1~2 秒延遲，3 秒後重新抓取最精準
+    setTimeout(() => {
+        loadData();
+        btn.disabled = false;
+        btn.innerText = "送出報名";
+        document.getElementById("registrationForm").reset(); // 清空表單
+    }, 3000);
+}
+
+// 首次加載
 loadData();
+// 每 15 秒自動更新一次
+setInterval(loadData, 15000);
 
 </script>
-
 
 </body>
 </html>
