@@ -218,6 +218,14 @@ footer{
     border:5px solid #ddd;
     box-sizing:border-box;
 }
+
+.gallery-img{
+    width:250px;
+    height:180px;
+    object-fit:cover;
+    margin:5px;
+    border-radius:8px;
+}
 </style>
 </head>
 
@@ -381,11 +389,11 @@ onsubmit="handleFormSubmit()">
 <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 </div>
 
-<div style="text-align:center;"> 
-    <img src="images/5.jpg" width="250"> 
-    <img src="images/250227_2.jpg" width="200"> 
-    <img src="images/10.jpg" width="300"> 
-    <img src="images/boad.jpg" width="230"> 
+<div style="text-align:center;">
+    <img src="images/5.jpg" class="gallery-img">
+    <img src="images/250227_2.jpg" class="gallery-img">
+    <img src="images/10.jpg" class="gallery-img">
+    <img src="images/boad.jpg" class="gallery-img">
 </div>
 
 <div class="card">
