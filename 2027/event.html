@@ -1,0 +1,1292 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#17365D">
+<title>教會年度規劃與事工會議紀錄</title>
+
+<style>
+:root {
+  --navy: #17365D;
+  --blue: #285783;
+  --green: #397657;
+  --gold: #C49A55;
+  --orange: #B96F35;
+  --red: #A94C46;
+  --text: #293747;
+  --muted: #718096;
+  --bg: #F3F6F9;
+  --line: #E2E8F0;
+  --white: #FFFFFF;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Microsoft JhengHei",
+               "Noto Sans TC", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.85;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+/* 頂部主視覺 */
+
+.hero {
+  background:
+    linear-gradient(120deg,
+    rgba(18,43,72,.98),
+    rgba(39,82,117,.94));
+  color: white;
+  padding: 65px 20px 55px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "2027";
+  position: absolute;
+  right: 5%;
+  bottom: -60px;
+  font-size: clamp(100px,20vw,240px);
+  font-weight: 900;
+  color: rgba(255,255,255,.045);
+  pointer-events: none;
+}
+
+.hero-inner {
+  max-width: 1120px;
+  margin: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow {
+  color: #E4C48D;
+  letter-spacing: 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.hero h1 {
+  font-size: clamp(27px,4vw,43px);
+  line-height: 1.35;
+  margin: 14px 0;
+  letter-spacing: 2px;
+}
+
+.hero p {
+  color: #D7E3EF;
+  font-size: 16px;
+  margin: 0;
+}
+
+.hero-line {
+  width: 65px;
+  height: 3px;
+  background: var(--gold);
+  margin: 24px 0;
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.hero-tags span {
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 30px;
+  padding: 5px 15px;
+  font-size: 13px;
+  color: #E8EDF4;
+}
+
+/* 導覽列 */
+
+.navbar {
+  background: white;
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,.035);
+}
+
+.nav-inner {
+  max-width: 1120px;
+  margin: auto;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow-x: auto;
+}
+
+.nav-inner a {
+  padding: 14px 13px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #526477;
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+}
+
+.nav-inner a:hover {
+  color: var(--blue);
+  border-bottom-color: var(--gold);
+}
+
+/* 主要內容 */
+
+.container {
+  max-width: 1120px;
+  margin: 38px auto;
+  padding: 0 20px;
+}
+
+.section {
+  margin-bottom: 42px;
+  scroll-margin-top: 85px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 22px;
+}
+
+.section-number {
+  width: 43px;
+  height: 43px;
+  border-radius: 12px;
+  background: var(--navy);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.section-heading h2 {
+  font-size: 22px;
+  margin: 0;
+  color: var(--navy);
+}
+
+.section-heading p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 23px;
+  margin-bottom: 17px;
+  box-shadow: 0 3px 12px rgba(27,50,75,.035);
+}
+
+.card h3 {
+  margin: 0 0 14px;
+  font-size: 17px;
+  color: var(--navy);
+}
+
+.card h4 {
+  margin: 15px 0 8px;
+  color: var(--green);
+  font-size: 15px;
+}
+
+p {
+  margin: 8px 0;
+}
+
+ul {
+  padding-left: 22px;
+  margin: 8px 0;
+}
+
+li {
+  padding: 3px 0;
+}
+
+strong {
+  color: #243F5A;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 17px;
+}
+
+.grid.two {
+  grid-template-columns: repeat(2,1fr);
+}
+
+.period {
+  border-radius: 13px;
+  padding: 22px;
+  min-height: 160px;
+}
+
+.period.blue {
+  background: #EAF2FA;
+  border-top: 4px solid #4D7EAD;
+}
+
+.period.green {
+  background: #EAF3ED;
+  border-top: 4px solid #548C6A;
+}
+
+.period.orange {
+  background: #FBF0E4;
+  border-top: 4px solid #C58B4B;
+}
+
+.period .month {
+  font-size: 27px;
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.period h3 {
+  margin: 0 0 5px;
+  color: var(--navy);
+}
+
+.period p {
+  font-size: 13px;
+  color: #627386;
+}
+
+/* 提醒區 */
+
+.notice {
+  padding: 17px 20px;
+  background: #FFF7E9;
+  border-left: 4px solid #D19A43;
+  border-radius: 7px;
+  margin: 17px 0;
+}
+
+.notice.red {
+  background: #FBF0EE;
+  border-left-color: var(--red);
+}
+
+.notice.green {
+  background: #EDF5EF;
+  border-left-color: var(--green);
+}
+
+.notice-title {
+  font-weight: 800;
+  color: #8B5A1E;
+  margin-bottom: 5px;
+}
+
+.notice.red .notice-title {
+  color: var(--red);
+}
+
+.notice.green .notice-title {
+  color: var(--green);
+}
+
+/* 表格 */
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 560px;
+  background: white;
+  font-size: 14px;
+}
+
+th {
+  background: #EAF0F6;
+  color: var(--navy);
+  font-weight: 800;
+  text-align: left;
+  padding: 13px 15px;
+}
+
+td {
+  padding: 12px 15px;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+}
+
+tr:hover td {
+  background: #FAFCFE;
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 5px;
+  background: #E8F0F8;
+  color: #315D86;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tag.green {
+  background: #E8F3EA;
+  color: #397657;
+}
+
+.tag.orange {
+  background: #FFF0DD;
+  color: #A56728;
+}
+
+.tag.red {
+  background: #F9EAE8;
+  color: #A94C46;
+}
+
+/* 課程講員 */
+
+.subheading {
+  font-size: 16px;
+  color: var(--green);
+  border-left: 4px solid var(--green);
+  padding-left: 12px;
+  margin: 23px 0 13px;
+  font-weight: 800;
+}
+
+.speaker-list {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 12px;
+}
+
+.speaker {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 14px 16px;
+  background: #FCFDFE;
+}
+
+.speaker strong {
+  display: block;
+  color: var(--navy);
+}
+
+.speaker small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* 禱告時段 */
+
+.prayer-box {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 13px;
+}
+
+.prayer-item {
+  text-align: center;
+  background: #F0F5F9;
+  border-radius: 12px;
+  padding: 22px 12px;
+}
+
+.prayer-item .icon {
+  font-size: 29px;
+  margin-bottom: 5px;
+}
+
+.prayer-item strong {
+  display: block;
+  font-size: 17px;
+}
+
+.prayer-item span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* 年度時間軸 */
+
+.timeline {
+  position: relative;
+  padding-left: 30px;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 10px;
+  bottom: 15px;
+  width: 2px;
+  background: #D5E0EA;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 25px;
+  padding: 0 0 0 13px;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -27px;
+  top: 8px;
+  width: 12px;
+  height: 12px;
+  background: var(--gold);
+  border-radius: 50%;
+  border: 3px solid #F8F3E9;
+}
+
+.timeline-item h3 {
+  margin: 0;
+  color: var(--navy);
+  font-size: 17px;
+}
+
+.timeline-item p {
+  margin: 4px 0;
+  color: #657487;
+  font-size: 14px;
+}
+
+/* 追蹤清單 */
+
+.progress-area {
+  margin: 15px 0 22px;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+
+.progress-bar {
+  height: 9px;
+  background: #E9EEF3;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--green);
+  transition: width .3s;
+}
+
+.task {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+  padding: 15px 0;
+  border-top: 1px solid var(--line);
+}
+
+.task input {
+  width: 19px;
+  height: 19px;
+  accent-color: var(--green);
+  margin-top: 5px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.task-content {
+  flex: 1;
+}
+
+.task-content strong {
+  display: block;
+  font-size: 15px;
+}
+
+.task-content small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.task.done .task-content strong {
+  text-decoration: line-through;
+  color: #98A4B0;
+}
+
+/* 結尾 */
+
+.conclusion {
+  background: linear-gradient(120deg,#17365D,#285783);
+  color: white;
+  padding: 35px;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.conclusion h2 {
+  color: #E9CD99;
+  margin-top: 0;
+}
+
+.conclusion p {
+  color: #E1EAF3;
+  max-width: 760px;
+  margin: auto;
+}
+
+.footer {
+  text-align: center;
+  padding: 28px 15px;
+  font-size: 12px;
+  color: #8995A3;
+}
+
+/* 列印 */
+
+.print-btn {
+  position: fixed;
+  right: 25px;
+  bottom: 25px;
+  border: 0;
+  border-radius: 30px;
+  background: var(--navy);
+  color: white;
+  padding: 12px 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,.2);
+  z-index: 200;
+  font-weight: 700;
+}
+
+.print-btn:hover {
+  background: var(--blue);
+}
+
+@media(max-width:750px) {
+  .grid,
+  .grid.two,
+  .speaker-list {
+    grid-template-columns: 1fr;
+  }
+
+  .prayer-box {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding: 45px 20px;
+  }
+
+  .container {
+    padding: 0 14px;
+    margin-top: 25px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .section-heading h2 {
+    font-size: 19px;
+  }
+
+  .print-btn {
+    right: 14px;
+    bottom: 15px;
+    padding: 10px 16px;
+  }
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  body {
+    background: white;
+    font-size: 11pt;
+  }
+
+  .navbar,
+  .print-btn {
+    display: none !important;
+  }
+
+  .hero {
+    padding: 25px;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .container {
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 0;
+  }
+
+  .card,
+  .period,
+  .notice,
+  .conclusion,
+  .prayer-item {
+    break-inside: avoid;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .section {
+    break-inside: auto;
+  }
+
+  th {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 首頁主視覺 -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">CHURCH ANNUAL MINISTRY PLAN</div>
+    <h1>教會年度規劃<br>與事工會議紀錄</h1>
+    <div class="hero-line"></div>
+    <p>建立信仰生活・進入家庭・實踐福音使命</p>
+    <div class="hero-tags">
+      <span>年度事工</span>
+      <span>課程裝備</span>
+      <span>禱告文化</span>
+      <span>福音宣教</span>
+    </div>
+  </div>
+</header>
+
+<!-- 導覽列 -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="#overview">年度方向</a>
+    <a href="#offering">奉獻定位</a>
+    <a href="#courses">課程講員</a>
+    <a href="#prayer">禱告事工</a>
+    <a href="#calendar">年度行事曆</a>
+    <a href="#administration">總務事工</a>
+    <a href="#tasks">追蹤事項</a>
+  </div>
+</nav>
+
+<main class="container">
+
+<!-- 一、年度方向 -->
+<section class="section" id="overview">
+  <div class="section-heading">
+    <div class="section-number">01</div>
+    <div>
+      <h2>年度事工架構與核心目標</h2>
+      <p>從個人信仰到家庭關懷，再到社區福音行動</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>年度核心目標</h3>
+    <p>
+      讓弟兄姊妹在年初就能掌握全年度事工規劃，
+      推動信仰不只停留在教會，更能實際進入家庭與職場，
+      使每位弟兄姊妹都能在生活中實踐信仰。
+    </p>
+  </div>
+
+  <div class="grid">
+    <div class="period blue">
+      <div class="month" style="color:#315F8A">01–04月</div>
+      <h3>個人親近主</h3>
+      <p>對內・與神建立關係</p>
+      <p>個人靈修、禱告、讀經與信仰建造。</p>
+    </div>
+
+    <div class="period green">
+      <div class="month" style="color:#397657">05–08月</div>
+      <h3>進到家庭</h3>
+      <p>家庭日・關懷親友</p>
+      <p>透過家庭活動，關懷弟兄姊妹及親友。</p>
+    </div>
+
+    <div class="period orange">
+      <div class="month" style="color:#A96C30">09–12月</div>
+      <h3>福音行動</h3>
+      <p>社區外展・福音探訪</p>
+      <p>透過社區關懷、探訪及聖誕事工分享福音。</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>年度事工分類</h3>
+    <div class="grid two">
+      <div>
+        <span class="tag">裝備</span>
+        <h4>禱告事工</h4>
+        <p class="muted">建立禱告文化，培養弟兄姊妹穩定的靈性生活。</p>
+      </div>
+      <div>
+        <span class="tag green">崇拜</span>
+        <h4>宣教事工</h4>
+        <p class="muted">裝備宣教心志，將福音帶進家庭、職場與社區。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 二、奉獻定位 -->
+<section class="section" id="offering">
+  <div class="section-heading">
+    <div class="section-number">02</div>
+    <div>
+      <h2>感恩奉獻與教會發展定位</h2>
+      <p>按著教會不同階段，尋求合宜的發展方向</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="notice red">
+      <div class="notice-title">重要發展方向</div>
+      近三年以適應牧者交替為優先，暫不考慮建堂；
+      三年後將主要心力集中於植堂事工。
+    </div>
+
+    <h3>感恩奉獻推動原則</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>發展階段</th>
+            <th>奉獻方向</th>
+            <th>主要用途</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag green">短期</span></td>
+            <td>總務修繕</td>
+            <td>教會設備、環境整修及改善。</td>
+          </tr>
+          <tr>
+            <td><span class="tag">長期</span></td>
+            <td>植堂、宣教</td>
+            <td>預備教會未來拓展與福音使命。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>推動方式</h4>
+    <ul>
+      <li>經牧者禱告及主日教導後，再推動感恩奉獻。</li>
+      <li>提出具體奉獻項目，供弟兄姊妹自由選擇。</li>
+      <li>預計於2月份向全教會報告。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 三、課程講員 -->
+<section class="section" id="courses">
+  <div class="section-heading">
+    <div class="section-number">03</div>
+    <div>
+      <h2>核心課程與講員安排</h2>
+      <p>建立完整的信仰裝備與宣教訓練</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>年度課程時段規劃</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>課程名稱</th>
+            <th>安排日期</th>
+            <th>建議時間</th>
+            <th>課程時數</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>職場宣教</td>
+            <td>週日</td>
+            <td>12:30–16:30</td>
+            <td>目標9小時</td>
+          </tr>
+          <tr>
+            <td>復興每一天</td>
+            <td>週日</td>
+            <td>12:30–16:30</td>
+            <td>依課程安排</td>
+          </tr>
+          <tr>
+            <td>小組化教會</td>
+            <td>週六</td>
+            <td>14:00–17:30</td>
+            <td>目標9小時</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notice">
+      <div class="notice-title">課程安排原則</div>
+      <ul>
+        <li>考量樂福區參與便利性，職場宣教及復興每一天優先安排週日。</li>
+        <li>小組化教會安排週六。</li>
+        <li>職場宣教及小組化教會各以9小時為目標，每次3小時。</li>
+        <li>張復民牧師主日講道不計入9小時；陳志宏牧師醫治釋放課程為例外。</li>
+      </ul>
+    </div>
+
+    <div class="notice red">
+      <div class="notice-title">待確認事項</div>
+      <ul>
+        <li>課程實際時數與費用。</li>
+        <li>講員可配合的日期與時段。</li>
+        <li>各課程主題與內容。</li>
+        <li>請允中與講員確認，並向于牧師確認主題。</li>
+        <li>請允中事先向樂福區說明課程安排。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>固定講員安排</h3>
+    <div class="speaker-list">
+      <div class="speaker">
+        <strong>李桃瑩教師</strong>
+        <small>禱告系列主題｜每兩個月一次，全年共6次</small>
+      </div>
+      <div class="speaker">
+        <strong>李允中教師</strong>
+        <small>復興每一天｜每月兩次</small>
+      </div>
+    </div>
+
+    <div class="subheading">三位牧師（主題待確認）</div>
+    <div class="speaker-list">
+      <div class="speaker">
+        <strong>陳志宏牧師</strong>
+        <small>復興每一天</small>
+      </div>
+      <div class="speaker">
+        <strong>于金堂牧師</strong>
+        <small>職場宣教／復興每一天</small>
+      </div>
+      <div class="speaker">
+        <strong>張復民牧師</strong>
+        <small>小組化教會／復興每一天</small>
+      </div>
+    </div>
+
+    <div class="subheading">牧者及傳道同工</div>
+    <ul>
+      <li>新聘傳道：安排2次。</li>
+      <li>吳至新牧師：每季1次，全年共4次。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>外請講員優先順序</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>順序</th>
+            <th>講員</th>
+            <th>分享方向及備註</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>01</td>
+            <td>高堂恩監督</td>
+            <td>宣教</td>
+          </tr>
+          <tr>
+            <td>02</td>
+            <td>信神陳冠賢院長</td>
+            <td>神學教育、宣教</td>
+          </tr>
+          <tr>
+            <td>03</td>
+            <td>華神老師或院長</td>
+            <td>神學教育、宣教</td>
+          </tr>
+          <tr>
+            <td>04</td>
+            <td>美國榮光教會林牧師</td>
+            <td>宣教、短宣隊見證</td>
+          </tr>
+          <tr>
+            <td>05</td>
+            <td>劉保音姊妹</td>
+            <td>福音見證，7/11可安排分享。</td>
+          </tr>
+          <tr>
+            <td>06</td>
+            <td>李南初弟兄</td>
+            <td>社區外展事工，請李姊確認講道經驗。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notice">
+      <div class="notice-title">講員日期協調</div>
+      7/11若林牧師已在台灣，則優先安排林牧師分享；
+      王傳道邀請事宜仍待確認。
+    </div>
+
+    <div class="subheading">備用交換講台</div>
+    <div class="speaker-list">
+      <div class="speaker"><strong>詹文仁牧師</strong></div>
+      <div class="speaker"><strong>林榮祥傳道</strong></div>
+      <div class="speaker"><strong>陳倚銓教師</strong></div>
+    </div>
+  </div>
+</section>
+
+<!-- 四、禱告事工 -->
+<section class="section" id="prayer">
+  <div class="section-heading">
+    <div class="section-number">04</div>
+    <div>
+      <h2>禱告事工與文化建立</h2>
+      <p>從年度禁食禱告到每日同工守望</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>帶狀式禁食禱告</h3>
+    <div class="grid two">
+      <div class="period blue">
+        <div class="month">01–02月</div>
+        <h3>過年前</h3>
+        <p>預備新的一年，尋求神的帶領。</p>
+      </div>
+      <div class="period green">
+        <div class="month">04月</div>
+        <h3>復活節前</h3>
+        <p>預備復活節，建立與神的關係。</p>
+      </div>
+      <div class="period orange">
+        <div class="month">07月</div>
+        <h3>平安七月</h3>
+        <p>配合短宣事工，為宣教守望。</p>
+      </div>
+      <div class="period blue">
+        <div class="month">12月</div>
+        <h3>聖誕節前</h3>
+        <p>為福音行動及聖誕事工禱告。</p>
+      </div>
+    </div>
+
+    <div class="notice green">
+      <div class="notice-title">年度推動目標</div>
+      一年4次，每次10天。請李桃瑩教師尋求規劃，
+      並推動弟兄姊妹認領禱告時段。
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>常態禱告會：建立每日守望文化</h3>
+    <p class="muted">建立每日同工守望禱告，每個時段30分鐘，包含經文及教會代禱事項。</p>
+
+    <div class="prayer-box">
+      <div class="prayer-item">
+        <div class="icon">🌅</div>
+        <strong>早上</strong>
+        <span>李姊</span>
+        <p class="muted">30分鐘</p>
+      </div>
+      <div class="prayer-item">
+        <div class="icon">☀️</div>
+        <strong>中午</strong>
+        <span>允中</span>
+        <p class="muted">30分鐘</p>
+      </div>
+      <div class="prayer-item">
+        <div class="icon">🌙</div>
+        <strong>晚上</strong>
+        <span>明珠姊</span>
+        <p class="muted">30分鐘</p>
+      </div>
+    </div>
+
+    <div class="notice">
+      <div class="notice-title">推動方式</div>
+      請桃瑩教師於長執會、區長會發出邀請，
+      鼓勵同工及弟兄姊妹參與，建立每日禱告守望文化。
+    </div>
+  </div>
+</section>
+
+<!-- 五、年度行事曆 -->
+<section class="section" id="calendar">
+  <div class="section-heading">
+    <div class="section-number">05</div>
+    <div>
+      <h2>年度重點活動行事曆</h2>
+      <p>全年活動規劃與福音行動安排</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="timeline">
+      <div class="timeline-item">
+        <h3>1–2月｜新春感恩與禱告</h3>
+        <p>新年團圓飯、新春紅包、感恩奉獻、禁食禱告推動及禱告手冊。</p>
+        <p><span class="tag green">負責：李姊主導</span></p>
+        <p class="muted">請李姊向常樂區了解過往團圓飯辦理方式。</p>
+      </div>
+
+      <div class="timeline-item">
+        <h3>4月｜復活節</h3>
+        <p>以耶穌為中心，著重教會內部信仰建造，強調個人與神的關係。</p>
+      </div>
+
+      <div class="timeline-item">
+        <h3>5月｜母親節家庭日</h3>
+        <p>以弟兄姊妹及親友為主要對象，推動家庭關懷與交流。</p>
+      </div>
+
+      <div class="timeline-item">
+        <h3>8月｜父親節家庭日</h3>
+        <p>延續家庭日活動，邀請親友參與，關懷家庭需要。</p>
+      </div>
+
+      <div class="timeline-item">
+        <h3>9月｜中秋節社區外展</h3>
+        <p>持續與里長合作，由靈糧堂協辦，以社區里民為主要對象。</p>
+      </div>
+
+      <div class="timeline-item">
+        <h3>11–12月｜感恩節與聖誕福音行動</h3>
+        <p>推動禁食禱告、個人福音探訪、街頭報佳音及聖誕晚會。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 六、總務事工 -->
+<section class="section" id="administration">
+  <div class="section-heading">
+    <div class="section-number">06</div>
+    <div>
+      <h2>總務事工與組織代禱</h2>
+      <p>環境改善、組織交接及執事培育</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>美化小組成立</h3>
+    <ul>
+      <li>禱告尋求成立教會美化小組。</li>
+      <li>盤點未來幾年的整修及美化項目。</li>
+      <li>整理相關計畫，提報長執會討論。</li>
+      <li>召集人人選可推薦宜興。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>明年總務召集人人選</h3>
+    <div class="notice">
+      <div class="notice-title">請同工一同禱告尋求</div>
+      <ol>
+        <li>尋找新的總務召集人。</li>
+        <li>直接授權總務執事負責。</li>
+        <li>維持由明珠代理。</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>明年度執事選舉</h3>
+    <p>
+      即日起開始為明年度執事候選人禱告，
+      求神預備合適的人選，興起願意委身服事、
+      承擔教會使命的同工。
+    </p>
+  </div>
+</section>
+
+<!-- 七、追蹤事項 -->
+<section class="section" id="tasks">
+  <div class="section-heading">
+    <div class="section-number">07</div>
+    <div>
+      <h2>下週重點跟進事項</h2>
+      <p>會議決議後續執行及確認工作</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>執行進度追蹤</h3>
+
+    <div class="progress-area">
+      <div class="progress-info">
+        <span id="progressText">完成 0 / 4 項</span>
+        <strong id="progressPercent">0%</strong>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <label class="task">
+      <input type="checkbox" class="task-check">
+      <span class="task-content">
+        <strong>01. 確認新春禱告與奉獻規劃細節</strong>
+        <small>負責：李姊</small>
+        <small>確認新春活動、感恩奉獻、禁食禱告及禱告手冊。</small>
+      </span>
+    </label>
+
+    <label class="task">
+      <input type="checkbox" class="task-check">
+      <span class="task-content">
+        <strong>02. 確認年度課程講員及時間</strong>
+        <small>負責：允中</small>
+        <small>聯繫各講員，確認日期、課程長度及費用。</small>
+      </span>
+    </label>
+
+    <label class="task">
+      <input type="checkbox" class="task-check">
+      <span class="task-content">
+        <strong>03. 確認樂福區課程參與安排</strong>
+        <small>負責：允中</small>
+        <small>事先溝通週六、週日課程時段及參與方式。</small>
+      </span>
+    </label>
+
+    <label class="task">
+      <input type="checkbox" class="task-check">
+      <span class="task-content">
+        <strong>04. 向于牧師確認課程主題</strong>
+        <small>負責：允中</small>
+        <small>確認職場宣教、復興每一天等主題安排。</small>
+      </span>
+    </label>
+
+    <p class="muted">※ 本進度為目前瀏覽器頁面中的即時勾選統計，重新載入後會重設。</p>
+  </div>
+</section>
+
+<!-- 核心總結 -->
+<section class="section">
+  <div class="conclusion">
+    <h2>年度事工核心精神</h2>
+    <p>
+      從個人與神建立關係開始，進而將信仰帶入家庭，
+      最後走入社區與人群。讓弟兄姊妹不只是領受福音，
+      也成為分享福音的人，在生活中活出信仰，
+      一同承擔教會的宣教使命。
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <p>教會年度規劃與事工會議紀錄</p>
+  <p>建立信仰・關懷家庭・實踐福音</p>
+</footer>
+
+<button class="print-btn" onclick="window.print()">
+  列印／另存 PDF
+</button>
+
+<script>
+// 追蹤事項進度計算
+const checks = document.querySelectorAll('.task-check');
+const progressFill = document.getElementById('progressFill');
+const progressText = document.getElementById('progressText');
+const progressPercent = document.getElementById('progressPercent');
+
+function updateProgress() {
+  const total = checks.length;
+  const completed = [...checks].filter(item => item.checked).length;
+  const percent = Math.round(completed / total * 100);
+
+  progressFill.style.width = percent + '%';
+  progressText.textContent = `完成 ${completed} / ${total} 項`;
+  progressPercent.textContent = percent + '%';
+
+  checks.forEach(check => {
+    check.closest('.task').classList.toggle(
+      'done', check.checked
+    );
+  });
+}
+
+checks.forEach(check => {
+  check.addEventListener('change', updateProgress);
+});
+
+updateProgress();
+</script>
+
+</body>
+</html>
